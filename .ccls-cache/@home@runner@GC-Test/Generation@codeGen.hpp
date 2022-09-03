@@ -63,6 +63,8 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
 
     oFile << std::flush;
 
+    std::cout << "\nbegin code gen\n";
+    
     for(Token tk : writeToFile){
         std::cout << "Token of type: " << tk.type << "\n with name of '" << getTokenName(tk.type) << "\n with content of '" << tk.content << "'\n\n";
         switch(tk.type){
@@ -82,7 +84,6 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "\n";
                 break;
                 }
-
             case TOK_sub:{
                 oFile << "  R_A = stacks[activeStack].back();\n";
                 oFile << "  stacks[activeStack].pop_back();\n";
@@ -92,7 +93,6 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "\n";
                 break;
             }
-
             case TOK_mul:{
                 oFile << "  R_A = stacks[activeStack].back();\n";
                 oFile << "  stacks[activeStack].pop_back();\n";
@@ -102,7 +102,6 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "\n";
                 break;
             }
-
             case TOK_div:{
                 oFile << "  R_A = stacks[activeStack].back();\n";
                 oFile << "  stacks[activeStack].pop_back();\n";
@@ -112,7 +111,6 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "\n";
                 break;
             }
-
             case TOK_mod:{
                 oFile << "  R_A = stacks[activeStack].back();\n";
                 oFile << "  stacks[activeStack].pop_back();\n";
@@ -122,7 +120,6 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "\n";
                 break;
             }
-
             case TOK_not:{
                 oFile << "  if(stacks[activeStack].back() == 0){\n";
                 oFile << "   stacks[activeStack].pop_back();\n";
@@ -135,7 +132,6 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "\n";
                 break;
             }
-
             case TOK_equals:{
                 oFile << "  R_A = stacks[activeStack].back();\n";
                 oFile << "  stacks[activeStack].pop_back();\n";
@@ -162,13 +158,11 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "\n";
                 break;
             }
-
             case TOK_stack_drop:{
                 oFile << "  stacks[activeStack].pop_back();\n";
                 oFile << "\n";
                 break;
             }
-
             case TOK_stack_swap:{
                 oFile << "  R_A = stacks[activeStack].back();\n";
                 oFile << "  stacks[activeStack].pop_back();\n";
@@ -178,19 +172,34 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "  stacks[activeStack].push_back(R_B)\n;";
                 break;
             }
+            case TOK_switch_stack:{
+                oFile << "  R_A = stacks[activeStack].back();\n";
+                oFile << "  stacks[activeStack].pop_back();\n";
+                oFile << "  activeStack = R_A;\n";
+                oFile << "\n";
+                break;
+            }
+            case TOK_data_move:{
+                oFile << "  R_A = stacks[activeStack].back();\n";
+                oFile << "  stacks[activeStack].pop_back();\n";
+                oFile << "  R_B = stacks[activeStack].back();\n";
+                oFile << "  stacks[activeStack].pop_back();\n";
+                oFile << "  stacks[R_A].push_back(stacks[R_B].back());\n";
+                oFile << "  stacks[R_B].pop_back();\n";
+                oFile << "\n";
+                break;
+            }
 
             case TOK_loop_start:{
                 oFile << "  while(1){\n";
                 oFile << "\n";
                 break;
             }
-
             case TOK_loop_end:{
                 oFile << "  }\n";
                 oFile << "\n";
                 break;
             }
-
             case TOK_loop_break:{
                 oFile << "  break;";
                 oFile << "\n";
@@ -204,38 +213,17 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "\n";
                 break;
             }
-
             case TOK_if_else:{
                 oFile << "  }\n";
                 oFile << "  else{\n";
                 break;
             }
-
             case TOK_if_end:{
                 oFile << "  }\n";
             }
 
             case TOK_separator:{
                 break; // do nothing
-            }
-
-            case TOK_switch_stack:{
-                oFile << "  R_A = stacks[activeStack].back();\n";
-                oFile << "  stacks[activeStack].pop_back();\n";
-                oFile << "  activeStack = R_A;\n";
-                oFile << "\n";
-                break;
-            }
-
-            case TOK_data_move:{
-                oFile << "  R_A = stacks[activeStack].back();\n";
-                oFile << "  stacks[activeStack].pop_back();\n";
-                oFile << "  R_B = stacks[activeStack].back();\n";
-                oFile << "  stacks[activeStack].pop_back();\n";
-                oFile << "  stacks[R_A].push_back(stacks[R_B].back());\n";
-                oFile << "  stacks[R_B].pop_back();\n";
-                oFile << "\n";
-                break;
             }
 
             case TOK_make_pointer:{
@@ -246,7 +234,6 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "\n";
                 break;
             }
-
             case TOK_dereference:{
                 oFile << "  R_A = stacks[activeStack].back();\n";
                 oFile << "  stacks[activeStack].pop_back();\n";
@@ -267,18 +254,27 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 oFile << "  stacks[activeStack].push_back('" << tk.content << "');\n";
                 break;
             }
-            
             case TOK_string_end:{
                 break; // nothing as of yet
             }
 
+            case TOK_func_decl:{
+                std::cout << "function with name \"" << tk.content << "\" declaration\n";
+                
+                break;
+            }
+            case TOK_func_call:{
+                std::cout << "function with name \"" << tk.content << "\" call\n";
+
+                break;
+            }
+            
             case TOK_error:{
                 std::cout << "error token with content: " + tk.content + "\n";
                 [[fallthrough]];
             }
-            case TOK_func_begin: // we dont want to have function processing tokens, only the calling of one
-            case TOK_func_end:   // ""
-            case TOK_func_decl:  // ""
+            case TOK_func_begin: // we dont want to have function processing tokens, only the declaration and calling of functions
+            case TOK_func_end:
             case TOK_misc_combo:
             case TOK_misc:
             default:{

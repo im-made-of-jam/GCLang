@@ -8,16 +8,7 @@
 
 #include "../tokens.hpp"
 #include "../Misc/loadFile.hpp"
-
-struct strPair{
-    std::string first;
-    std::string second;
-
-    void clear(){
-        first = "";
-        second = "";
-    }
-};
+#include "strPair.hpp"
 
 bool getAliases(const std::string& filename, std::vector<strPair>& aliasList){
     std::vector<std::string> lines;
@@ -66,17 +57,7 @@ bool getAliases(const std::string& filename, std::vector<strPair>& aliasList){
     return true;
 }
 
-bool convertAliasesToCalls(std::vector<Token>& inputList, std::vector<Token>& tkList, const std::string& aliasFilePath){
-    std::vector<strPair> aliasList;
-
-    inputList.push_back(Token(TOK_misc_combo, "exit"));
-
-    if(!getAliases(aliasFilePath, aliasList)){
-        std::cout << "could not interpret stdLib alias file\n";
-
-        return false;
-    }
-
+bool convertAliasesToCalls(std::vector<Token>& inputList, std::vector<Token>& tkList, std::vector<strPair>& aliasList){
     for(Token tk : inputList){
         if(tk.type == TOK_misc || tk.type == TOK_misc_combo){
             for(strPair pair : aliasList){

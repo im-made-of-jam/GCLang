@@ -58,8 +58,6 @@ bool getAliases(const std::string& filename, std::vector<strPair>& aliasList){
 }
 
 bool convertAliasesToCalls(std::vector<Token>& inputList, std::vector<Token>& tkList, std::vector<strPair>& aliasList){
-    inputList.push_back(Token(TOK_misc_combo, "exit"));
-
     for(Token tk : inputList){
         if(tk.type == TOK_misc || tk.type == TOK_misc_combo){
             for(strPair pair : aliasList){

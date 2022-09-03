@@ -3,9 +3,11 @@
 #ifndef _KEYWORDS_HPP
 #define _KEYWORDS_HPP
 
-bool isKeyword(const std::string& str, std::vector<std::string>& keywords){
-    for(std::string s : keywords){
-        if(s == str){
+#include "strPair.hpp"
+
+bool isKeyword(const std::string& str, std::vector<strPair>& keywords){
+    for(strPair s : keywords){
+        if(s.first == str){
             return true;
         }
     }

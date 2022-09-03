@@ -1,6 +1,9 @@
 # command line build text
 # ./Built/GCLang ./Built/b.gc -o ./bGCOut -I -D -DD -DDD
 
-"string" puts
+function{
+    "hello" puts
+}
 
-10 putc
+function
+function

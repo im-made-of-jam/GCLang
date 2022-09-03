@@ -479,7 +479,13 @@ int main(int argc, char* argv[]){
     std::vector<Token> functionsMade;
     
     if(!makeFunctions(keywordsProcessed, functionsMade, aliasNames)){
-        
+        std::cout << "failed at function generation\n";
+
+        return -1;
+    }
+
+    if(args.deDebug){
+        std::cout << functionsMade.size() << " tokens after function handling\n";
     }
 
     keywordsProcessed.clear();
@@ -508,20 +514,7 @@ int main(int argc, char* argv[]){
         }
     }
 
-    if(!verifyTokens(externsProcessed)){
-        std::cout << "failed at token verification\n";
 
-        return -1;
-    }
-
-    if(args.debug){
-        for(Token tk : externsProcessed){
-            std::cout << "Token of type: " << tk.type << "\n";
-            std::cout << " with name of: " << getTokenName(tk.type) << "\n";
-            std::cout << " with content: " << tk.content << "\n";
-        }
-    }
-    
     if(args.generateCPP){
         if(!generateCpp(args.intermediateName, externsProcessed, args.includeCPPStdlib, args.CPPStdLibPath, args.CPPWindDownPath)){
             std::cout << "code gen failure\n";

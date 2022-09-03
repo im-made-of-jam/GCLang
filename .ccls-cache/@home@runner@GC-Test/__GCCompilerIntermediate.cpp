@@ -166,3 +166,28 @@ void _extern_9(){
 
 // __BEGIN_MAIN
 int main(int argc, char* argv[]){
+  auto function = [&](){
+  stacks[activeStack].push_back('h');
+  stacks[activeStack].push_back('e');
+  stacks[activeStack].push_back('l');
+  stacks[activeStack].push_back('l');
+  stacks[activeStack].push_back('o');
+  stacks[activeStack].push_back(5);
+
+  R_A = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  R_B = reinterpret_cast<uint64_t>(new GCPointer(R_A, &stacks[activeStack]));
+  stacks[activeStack].push_back(reinterpret_cast<uint64_t>(R_B));
+
+  _extern_9();
+
+  }
+  function();
+  function();
+
+// __BEGIN_EXTERN_WIND_DOWN
+if(gcoutFile.is_open()){
+    gcoutFile.flush();
+    gcoutFile.close();
+}
+}

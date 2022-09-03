@@ -2,7 +2,7 @@
 #ifdef WIN32
     #include <conio.h>
 
-#else // probably unix, dont really care other
+#else // probably unix, dont really care otherwise
     #include <termios.h>
 
     // not perfect but this will do for now

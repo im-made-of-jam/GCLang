@@ -166,13 +166,13 @@ void _extern_9(){
 
 // __BEGIN_MAIN
 int main(int argc, char* argv[]){
-  stacks[activeStack].push_back('s');
-  stacks[activeStack].push_back('t');
-  stacks[activeStack].push_back('r');
-  stacks[activeStack].push_back('i');
-  stacks[activeStack].push_back('n');
-  stacks[activeStack].push_back('g');
-  stacks[activeStack].push_back(6);
+  auto function = [&](){
+  stacks[activeStack].push_back('h');
+  stacks[activeStack].push_back('e');
+  stacks[activeStack].push_back('l');
+  stacks[activeStack].push_back('l');
+  stacks[activeStack].push_back('o');
+  stacks[activeStack].push_back(5);
 
   R_A = stacks[activeStack].back();
   stacks[activeStack].pop_back();
@@ -181,12 +181,9 @@ int main(int argc, char* argv[]){
 
   _extern_9();
 
-  stacks[activeStack].push_back(10);
-
-  _extern_2();
-
-  _extern_@();
-
+  };
+  function();
+  function();
 
 // __BEGIN_EXTERN_WIND_DOWN
 if(gcoutFile.is_open()){
