@@ -1,0 +1,6 @@
+# command line build text
+# ./Built/GCLang ./Built/b.gc -o ./bGCOut -I -D -DD -DDD
+
+"string" puts
+
+10 putc

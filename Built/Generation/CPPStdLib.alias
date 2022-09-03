@@ -1,0 +1,10 @@
+exit,0
+puti,1
+putc,2
+sleep,3
+getc,4
+size,5
+setstdout,6
+setgcout,7
+flush,8
+puts,9

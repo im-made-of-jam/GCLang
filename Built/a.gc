@@ -1,0 +1,21 @@
+0&
+
+10
+(
+    dup 2 % 1 = if
+        setgcout
+    endif
+
+    dup 2 % 0 = if
+        setstdout
+    endif
+
+    dup 0 = if
+        break
+    endif
+
+    dup puti
+    10 putc
+
+    1 -
+)
