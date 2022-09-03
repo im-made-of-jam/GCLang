@@ -259,12 +259,17 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
             }
 
             case TOK_func_decl:{
-                std::cout << "function with name \"" << tk.content << "\" declaration\n";
+                oFile << "  auto " << tk.content << " = [&](){\n";
                 
                 break;
             }
+            case TOK_func_end:{
+                oFile << "  };\n";
+
+                break;
+            }
             case TOK_func_call:{
-                std::cout << "function with name \"" << tk.content << "\" call\n";
+                oFile << "  " << tk.content << "();\n";
 
                 break;
             }
@@ -273,8 +278,7 @@ bool generateCpp(const std::string& filename, std::vector<Token>& writeToFile, b
                 std::cout << "error token with content: " + tk.content + "\n";
                 [[fallthrough]];
             }
-            case TOK_func_begin: // we dont want to have function processing tokens, only the declaration and calling of functions
-            case TOK_func_end:
+            case TOK_func_begin:
             case TOK_misc_combo:
             case TOK_misc:
             default:{

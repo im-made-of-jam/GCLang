@@ -181,9 +181,55 @@ int main(int argc, char* argv[]){
 
   _extern_9();
 
+  stacks[activeStack].push_back(10);
+
+  _extern_2();
+
+  };
+  auto apples = [&](){
+  stacks[activeStack].push_back('y');
+  stacks[activeStack].push_back('u');
+  stacks[activeStack].push_back('m');
+  stacks[activeStack].push_back('m');
+  stacks[activeStack].push_back('y');
+  stacks[activeStack].push_back(5);
+
+  R_A = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  R_B = reinterpret_cast<uint64_t>(new GCPointer(R_A, &stacks[activeStack]));
+  stacks[activeStack].push_back(reinterpret_cast<uint64_t>(R_B));
+
+  _extern_9();
+
+  stacks[activeStack].push_back(10);
+
+  _extern_2();
+
+  stacks[activeStack].push_back('a');
+  stacks[activeStack].push_back('p');
+  stacks[activeStack].push_back('p');
+  stacks[activeStack].push_back('l');
+  stacks[activeStack].push_back('e');
+  stacks[activeStack].push_back('s');
+  stacks[activeStack].push_back(6);
+
+  R_A = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  R_B = reinterpret_cast<uint64_t>(new GCPointer(R_A, &stacks[activeStack]));
+  stacks[activeStack].push_back(reinterpret_cast<uint64_t>(R_B));
+
   };
   function();
   function();
+  apples();
+  _extern_9();
+
+  stacks[activeStack].push_back(10);
+
+  _extern_2();
+
+  stacks[activeStack].push_back(2);
+
 
 // __BEGIN_EXTERN_WIND_DOWN
 if(gcoutFile.is_open()){

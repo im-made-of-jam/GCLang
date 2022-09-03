@@ -3,7 +3,16 @@
 
 function{
     "hello" puts
+    10 putc
+}
+
+apples{ #akuhdgiuskhfgvnuisdjvhbdyufxgjhghdfyujdghfbvuydjfyghv
+    "yummy" puts
+    10 putc
+    "apples"
 }
 
 function
 function
+apples puts
+10 putc
