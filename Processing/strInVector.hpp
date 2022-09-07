@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef _STRINVECTOR_HPP
-#define _STRINVECTOR_HPP
+#ifndef STRINVECTOR_HPP
+#define STRINVECTOR_HPP
 
 #include <string>
 #include <vector>
@@ -16,4 +16,4 @@ bool strInVector(const std::string& string, const std::vector<std::string>& vect
     return false;
 }
 
-#endif /* _STRINVECTOR_HPP */
+#endif /* STRINVECTOR_HPP */

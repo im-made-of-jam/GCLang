@@ -7,4 +7,5 @@ size,5
 setstdout,6
 setgcout,7
 flush,8
-puts,9
+active,9
+system,10

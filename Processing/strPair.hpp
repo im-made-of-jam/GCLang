@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef _STRPAIR_HPP
-#define _STRPAIR_HPP
+#ifndef STRPAIR_HPP
+#define STRPAIR_HPP
 
 struct strPair{
     std::string first;
@@ -13,4 +13,4 @@ struct strPair{
     }
 };
 
-#endif /* _STRPAIR_HPP */
+#endif /* STRPAIR_HPP */

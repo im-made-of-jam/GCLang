@@ -1,13 +1,13 @@
 #pragma once
 
-#ifndef _VERIFICATION_HPP
-#define _VERIFICATION_HPP
+#ifndef VERIFICATION_HPP
+#define VERIFICATION_HPP
 
 #include <vector>
 #include <iostream>
 #include <string>
 
-#include "../tokens.hpp"
+#include "tokens.hpp"
 
 // ensure there is n even number of quotes so that the program does not contain a malformed string
 bool verifyStringQuotes(const std::string& str){
@@ -163,4 +163,4 @@ bool verifyTokens(std::vector<Token>& tkList){ // TODO verify loop tokens, funct
     return true;
 }
 
-#endif /* _VERIFICATION_HPP */
+#endif /* VERIFICATION_HPP */

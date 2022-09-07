@@ -19,9 +19,34 @@ bool outputToStdout = true;
 
 std::ofstream gcoutFile; // output stream for "GCOut.gco"
 
-
-
 // __BEGIN_EXTERN_INTERNALS
+
+// dereference a GCPointer and reverse the string made by said pointer, the return string made by said pointer
+std::string _extern_deref_and_reverse(){    
+    std::string reversed;
+    
+    R_A = stacks[activeStack].back();
+    
+    stacks[activeStack].pop_back();
+    
+    GC_P = reinterpret_cast<GCPointer*>(R_A);
+    
+    for(uint64_t i = 0; i < GC_P->data[0]; ++i){
+        reversed += static_cast<char>(GC_P->data[GC_P->data[0] - (i)]);
+    }
+    
+    stacks[activeStack].push_back(GC_P->data[0]);
+    
+    delete GC_P;
+
+    std::string str;
+
+    for(uint64_t i = reversed.size(); i; --i){
+        str += reversed[i - 1];
+    }
+
+    return str;
+}
 
 // open gcout if needed
 void _extern_io_check_init(){
@@ -90,9 +115,9 @@ void _extern_3(){
     stacks[activeStack].pop_back();
 }
 
-// push char ascii code on stack from input
+// push char ascii code onto top of stack from input
 void _extern_4(){
-    R_A += getch();
+    R_A = getch();
 
     #ifdef WIN32
         // since only first char from input is recieved, and windows uses CRLF
@@ -130,19 +155,13 @@ void _extern_8(){
     _extern_cout_flush();
 }
 
-// print string
+// return the 0-index number of the currently active stack
 void _extern_9(){
-    _extern_io_check_init();
+    stacks[activeStack].push_back(activeStack);
+}
 
-    // dereference the pointer and remove it from the stack
-    R_A = stacks[activeStack].back();
-    stacks[activeStack].pop_back();
-    GC_P = reinterpret_cast<GCPointer*>(R_A);
-
-    // then for every char in the dereferenced pointer from the end to the start, we print it
-    for(uint64_t i = 0; i < GC_P->data[0]; ++i){
-        std::cout << static_cast<char>((GC_P->data[GC_P->data[0] - i]));
-    }
-    
-    delete GC_P; // then free the memory
+// like system() in C(++)
+//   (look at the line of this function)
+void _extern_10(){
+    system(_extern_deref_and_reverse().c_str());
 }

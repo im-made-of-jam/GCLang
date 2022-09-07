@@ -1,9 +1,8 @@
 #pragma once
 
-#ifndef _REMOVECOMMENTS_HPP
-#define _REMOVECOMMENTS_HPP
+#ifndef REMOVECOMMENTS_HPP
+#define REMOVECOMMENTS_HPP
 
-#include <stdnoreturn.h>
 #include <vector>
 #include <string>
 
@@ -27,4 +26,4 @@ bool removeComments(const std::vector<std::string>& inputList, std::vector<std::
     return true;
 }
 
-#endif /* _REMOVECOMMENTS_HPP */
+#endif /* REMOVECOMMENTS_HPP */

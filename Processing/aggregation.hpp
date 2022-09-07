@@ -1,11 +1,43 @@
 #pragma once
 
-#ifndef _AGGREGATION_HPP
-#define _AGGREGATION_HPP
+#ifndef AGGREGATION_HPP
+#define AGGREGATION_HPP
 
-#include "../tokens.hpp"
+#include "tokens.hpp"
 
-bool keyWordsToTokens(const std::vector<Token>& inputList, std::vector<Token>& tkList){ // turns strings that are keywords e.g. "dup" into their respective tokens
+// turns strings of string_char tokens into string_crun tokens
+bool stringAggregation(const std::vector<Token>& inputList, std::vector<Token>& tkList){
+    bool inString = false;
+
+    Token working(TOK_string_crun);
+    
+    for(Token tk : inputList){
+        if(tk.type == TOK_string_char){
+            inString = true;
+
+            working.content += tk.content;
+
+            continue;
+        }
+
+        if(inString){
+            inString = false;
+
+            tkList.push_back(working);
+
+            working = Token(TOK_string_crun);
+
+            continue;
+        }
+
+        tkList.push_back(tk);
+    }
+
+    return true;
+}
+
+// turns strings that are keywords e.g. "dup" into their respective tokens
+bool keyWordsToTokens(const std::vector<Token>& inputList, std::vector<Token>& tkList){
     for(Token tk : inputList){
         if(tk.type == TOK_misc || tk.type == TOK_misc_combo){
             if(tk.content == "dup"){
@@ -53,4 +85,4 @@ bool keyWordsToTokens(const std::vector<Token>& inputList, std::vector<Token>& t
     return true;
 }
 
-#endif /* _AGGREGATION_HPP */
+#endif /* AGGREGATION_HPP */

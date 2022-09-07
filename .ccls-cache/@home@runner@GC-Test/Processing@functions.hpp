@@ -1,14 +1,14 @@
 #pragma once
 
-#ifndef _FUNCTIONS_HPP
-#define _FUNCTIONS_HPP
+#ifndef FUNCTIONS_HPP
+#define FUNCTIONS_HPP
 
-#include "../tokens.hpp"
-#include "strPair.hpp"
-#include "keywords.hpp"
-#include "strInVector.hpp"
+#include "tokens.hpp"
+#include "Processing/strPair.hpp"
+#include "Processing/keywords.hpp"
+#include "Processing/strInVector.hpp"
 
-#include "../Tokens/MainTokens.hpp"
+#include "Tokens/MainTokens.hpp"
 
 #include <vector>
 
@@ -61,17 +61,13 @@ bool makeFunctions(std::vector<Token>& inputList, std::vector<Token>& tkList, st
 
         tkList.push_back(Token(TOK_func_call, intermediate.at(i).content));
     }
-
-    std::cout << "\n\n___________________________function______________________________\n\n";
     
     for(Token tk : intermediate){
         std::cout << "Token of type " << getTokenName(tk.type);
         std::cout << "\n with content " << tk.content << "\n\n";
     }
-
-    std::cout << "\n\n___________________________function______________________________\n\n";
     
     return true;
 }
 
-#endif /* _FUNCTIONS_HPP */
+#endif /* FUNCTIONS_HPP */

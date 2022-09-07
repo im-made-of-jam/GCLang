@@ -23,12 +23,13 @@ struct GCPointer{
         data[0] = count;
 
         for(uint64_t i = 0; i < count; ++i){
-            // dont actually do anything to handlean underflow, we still want it to be an error, but we also want a somewhat reasonable message
+            // dont actually do anything to handle an underflow, we still want it to be an error, but we also want a somewhat reasonable message
             if(!stack->size()){
                 std::cout << "stack underflow upon creating pointer struct\n";
             }
 
             // now we pop off of the top of the stack and remove the last object from the stack
+            // this will also raise an exception if the stack size is not enough to pop from
             data[i + 1] = stack->back();
             stack->pop_back();
         }
@@ -37,10 +38,6 @@ struct GCPointer{
     ~GCPointer(){
         // this is very easy compared to construction
         delete[] data;
-    }
-
-    uint64_t getCount(){
-        return data[0];
     }
 };
 

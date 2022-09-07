@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef _LOADFILE_HPP
-#define _LOADFILE_HPP
+#ifndef LOADFILE_HPP
+#define LOADFILE_HPP
 
 #include <vector>
 #include <string>
@@ -29,4 +29,4 @@ bool loadFile(std::vector<std::string>& lines, const std::string& filename){
     return true;
 }
 
-#endif /* _LOADFILE_HPP */
+#endif /* LOADFILE_HPP */

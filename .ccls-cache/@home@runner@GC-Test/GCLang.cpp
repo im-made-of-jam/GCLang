@@ -1,5 +1,5 @@
 // g++ ./GCLang.cpp -o ./Built/GCLang.exe -O2 -std=gnu++20
-// g++ ./GCLang.cpp -o ./Built/GCLang -O2 -std=gnu++20
+// g++ ./GCLang.cpp -o ./Built/GCLang -O2 -std=gnu++20 -I .
 
 
 // most things should still work perfectly fine if this is built on a 32 bit machine
@@ -422,10 +422,21 @@ int main(int argc, char* argv[]){
     separatorsSmallList.clear();
     separatorsSmallList.shrink_to_fit();
 
+    std::vector<Token> stringRunsMade;
+
+    if(!stringAggregation(miscCombined, stringRunsMade)){
+        std::cout << "failed at string aggregation\n";
+
+        return -1;
+    }
+
+    miscCombined.clear();
+    miscCombined.shrink_to_fit();
+
     // strings of number tokens are combined into single tokens similar to misc processing
     std::vector<Token> numbersProcessedList;
 
-    if(!combineNumberTokens(miscCombined, numbersProcessedList)){
+    if(!combineNumberTokens(stringRunsMade, numbersProcessedList)){
         std::cout << "failed at number combining\n";
 
         return -1;
@@ -517,14 +528,6 @@ int main(int argc, char* argv[]){
 
     if(args.generateCPP){
         if(!generateCpp(args.intermediateName, externsProcessed, args.includeCPPStdlib, args.CPPStdLibPath, args.CPPWindDownPath)){
-            std::cout << "code gen failure\n";
-
-            return -1;
-        }
-    }
-
-    if(args.generatePyASM){
-        if(!generatePyASM(args.outputFilename, externsProcessed, args.includeASMStdLib, args.ASMStdLibPath, args.ASMWindDownPath)){
             std::cout << "code gen failure\n";
 
             return -1;

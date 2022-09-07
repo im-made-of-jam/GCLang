@@ -1,11 +1,11 @@
 #pragma once
 
-#ifndef _MAIN_TOKENS_HPP
-#define _MAIN_TOKENS_HPP
+#ifndef MAIN_TOKENS_HPP
+#define MAIN_TOKENS_HPP
 
-#include "combinations.hpp"
-#include "../tokens.hpp"
-#include "tokenVerifications.hpp"
+#include "Tokens/combinations.hpp"
+#include "tokens.hpp"
+#include "Tokens/tokenVerifications.hpp"
 
 bool tokenise(std::vector<Token>& tkList, const std::string& source){
     // whether or ont the tokens being processed are part of a string and should be string_char or not
@@ -299,10 +299,13 @@ std::string getTokenName(uint64_t token){
 
         case TOK_string_end:
             return std::string{"string end"};
+        
+        case TOK_string_crun:
+            return std::string{"string character run"};
     }
 
     // no match should not be an error
     return std::string{"other"};
 }
 
-#endif /* _MAIN_TOKENS_HPP */
+#endif /* MAIN_TOKENS_HPP */

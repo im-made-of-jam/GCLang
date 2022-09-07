@@ -1,14 +1,14 @@
 #pragma once
 
-#ifndef _REPLACEMENTS_HPP
-#define _REPLACEMENTS_HPP
+#ifndef REPLACEMENTS_HPP
+#define REPLACEMENTS_HPP
 
 #include <vector>
 #include <string>
 
-#include "../tokens.hpp"
-#include "../Misc/loadFile.hpp"
-#include "strPair.hpp"
+#include "tokens.hpp"
+#include "Misc/loadFile.hpp"
+#include "Processing/strPair.hpp"
 
 bool getAliases(const std::string& filename, std::vector<strPair>& aliasList){
     std::vector<std::string> lines;
@@ -77,4 +77,4 @@ bool convertAliasesToCalls(std::vector<Token>& inputList, std::vector<Token>& tk
     return true;
 }
 
-#endif /* _REPLACEMENTS_HPP */
+#endif /* REPLACEMENTS_HPP */

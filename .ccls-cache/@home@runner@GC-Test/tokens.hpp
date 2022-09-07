@@ -39,6 +39,7 @@ enum Tokens{
 
     TOK_string_begin  , // '"'
     TOK_string_char   , // any character between a string_begin token and a string_end token
+    TOK_string_crun   , // a run of characters between an end and a start token
     TOK_string_end    , // '"' also, but the end of a string literal rather than the start
     
     TOK_stack_dup     ,  // "dup"

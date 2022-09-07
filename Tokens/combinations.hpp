@@ -1,13 +1,13 @@
 #pragma once
 
-#ifndef _COMBINATIONS_HPP
-#define _COMBINATIONS_HPP
+#ifndef COMBINATIONS_HPP
+#define COMBINATIONS_HPP
 
 #include <vector>
 
-#include "../tokens.hpp"
-#include "tokenVerifications.hpp"
-#include "MainTokens.hpp"
+#include "tokens.hpp"
+#include "Tokens/tokenVerifications.hpp"
+#include "Tokens/MainTokens.hpp"
 
 bool combineNumberTokens(std::vector<Token>& inputList, std::vector<Token>& tkList){ // combine strings of number tokens into one number_combo token
     Token listTok(TOK_error);
@@ -123,4 +123,4 @@ bool convertExternCalls(const std::vector<Token>& inputList, std::vector<Token>&
     return true;
 }
 
-#endif /* _COMBINATIONS_HPP */
+#endif /* COMBINATIONS_HPP */

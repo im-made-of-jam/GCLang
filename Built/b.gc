@@ -1,18 +1,30 @@
 # command line build text
 # ./Built/GCLang ./Built/b.gc -o ./bGCOut -I -D -DD -DDD
 
-function{
-    "hello" puts
-    10 putc
+0&
+puts{
+    # first dereference
+    <
+
+    (
+        # break on all letters printed
+        dup 0 = if
+            break
+        endif
+
+        # one off pointer number
+        1 -
+
+        # swap char to print and pointer counter
+        swap
+
+        putc
+    )
+
+    # drop pointer number from the stack
+    drop
 }
 
-apples{ #akuhdgiuskhfgvnuisdjvhbdyufxgjhghdfyujdghfbvuydjfyghv
-    "yummy" puts
-    10 putc
-    "apples"
-}
+"clear" system
 
-function
-function
-apples puts
-10 putc
+20 exit

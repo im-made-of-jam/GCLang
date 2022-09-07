@@ -6,10 +6,10 @@ bool exitFlag = false;
 uint64_t R_A = 0;
 uint64_t R_B = 0;
 
-std::vector<uint64_t> stacks[4] = {std::vector<uint64_t>(262144),
-                                   std::vector<uint64_t>(65536),
-                                   std::vector<uint64_t>(65536),
-                                   std::vector<uint64_t>(65536)};
+std::vector<uint64_t> stacks[4] = {std::vector<uint64_t>(),
+                                   std::vector<uint64_t>(),
+                                   std::vector<uint64_t>(),
+                                   std::vector<uint64_t>()};
 uint64_t activeStack = 0;
 
 struct GCPointer{uint64_t* data;GCPointer(uint64_t count, std::vector<uint64_t>* stack){if((stack->size() == 0) || (count == 0)){data = new uint64_t[1]{0};return;}data = new uint64_t[count + 1];data[0] = count;for(uint64_t i = 0; i < count; ++i){if(!stack->size()){std::cout << "stack underflow upon creating pointer struct\n";}data[i + 1] = stack->back();stack->pop_back();}}~GCPointer(){delete[] data;}uint64_t getCount(){return data[0];}};
@@ -36,9 +36,34 @@ bool outputToStdout = true;
 
 std::ofstream gcoutFile; // output stream for "GCOut.gco"
 
-
-
 // __BEGIN_EXTERN_INTERNALS
+
+// dereference a GCPointer and reverse the string
+std::string _extern_deref_and_reverse(){    
+    std::string reversed;
+    
+    R_A = stacks[activeStack].back();
+    
+    stacks[activeStack].pop_back();
+    
+    GC_P = reinterpret_cast<GCPointer*>(R_A);
+    
+    for(uint64_t i = 0; i < GC_P->data[0]; ++i){
+        reversed += static_cast<char>(GC_P->data[GC_P->data[0] - (i)]);
+    }
+    
+    stacks[activeStack].push_back(GC_P->data[0]);
+    
+    delete GC_P;
+
+    std::string str;
+
+    for(uint64_t i = reversed.size(); i; --i){
+        str += reversed[i - 1];
+    }
+
+    return str;
+}
 
 // open gcout if needed
 void _extern_io_check_init(){
@@ -107,9 +132,9 @@ void _extern_3(){
     stacks[activeStack].pop_back();
 }
 
-// push char ascii code on stack from input
+// push char ascii code onto top of stack from input
 void _extern_4(){
-    R_A += getch();
+    R_A = getch();
 
     #ifdef WIN32
         // since only first char from input is recieved, and windows uses CRLF
@@ -147,88 +172,115 @@ void _extern_8(){
     _extern_cout_flush();
 }
 
-// print string
+// return the 0-index number of the currently active stack
 void _extern_9(){
-    _extern_io_check_init();
+    stacks[activeStack].push_back(activeStack);
+}
 
-    // dereference the pointer and remove it from the stack
-    R_A = stacks[activeStack].back();
-    stacks[activeStack].pop_back();
-    GC_P = reinterpret_cast<GCPointer*>(R_A);
-
-    // then for every char in the dereferenced pointer from the end to the start, we print it
-    for(uint64_t i = 0; i < GC_P->data[0]; ++i){
-        std::cout << static_cast<char>((GC_P->data[GC_P->data[0] - i]));
-    }
-    
-    delete GC_P; // then free the memory
+// like system() in C(++)
+//   (look at the line of this function)
+void _extern_10(){
+    system(_extern_deref_and_reverse().c_str());
 }
 
 // __BEGIN_MAIN
 int main(int argc, char* argv[]){
-  auto function = [&](){
-  stacks[activeStack].push_back('h');
-  stacks[activeStack].push_back('e');
-  stacks[activeStack].push_back('l');
-  stacks[activeStack].push_back('l');
-  stacks[activeStack].push_back('o');
-  stacks[activeStack].push_back(5);
-
+stacks[0].reserve(262144);
+stacks[0].reserve(65536);
+stacks[0].reserve(65536);
+stacks[0].reserve(65536);
+// __TOK_func_decl
+  auto puts = [&](){
+// __TOK_dereference
   R_A = stacks[activeStack].back();
   stacks[activeStack].pop_back();
-  R_B = reinterpret_cast<uint64_t>(new GCPointer(R_A, &stacks[activeStack]));
-  stacks[activeStack].push_back(reinterpret_cast<uint64_t>(R_B));
+  GC_P = reinterpret_cast<GCPointer*>(R_A);
+  for(uint64_t i = 0; i < GC_P->data[0]; ++i){
+    stacks[activeStack].push_back(GC_P->data[GC_P->data[0] - (i)]);
+  }
+  stacks[activeStack].push_back(GC_P->data[0]);
+  delete GC_P;
+// __TOK_loop_start
+  while(1){
 
-  _extern_9();
+// __TOK_stack_dup
+  stacks[activeStack].push_back(stacks[activeStack].back());
 
-  stacks[activeStack].push_back(10);
+  stacks[activeStack].push_back(0);
 
+// __TOK_equals
+  R_A = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  R_B = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  if(R_A == R_B){
+    stacks[activeStack].push_back(1);
+  }
+  else{
+    stacks[activeStack].push_back(0);
+  }
+
+// __TOK_i_begin
+  R_A = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  if(R_A){
+
+// __TOK_loop_break
+  break;
+// __TOK_if_end
+  }
+  stacks[activeStack].push_back(1);
+
+// __TOK_sub
+  R_A = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  R_B = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  stacks[activeStack].push_back(R_B - R_A);
+
+// __TOK_stack_swap
+  R_A = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  R_B = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  stacks[activeStack].push_back(R_A)
+;  stacks[activeStack].push_back(R_B)
+;// __TOK_call_extern
   _extern_2();
 
+// __TOK_loop_end
+  }
+
+// __TOK_stack_drop
+  stacks[activeStack].pop_back();
+
+// __TOK_func_end
   };
-  auto apples = [&](){
-  stacks[activeStack].push_back('y');
-  stacks[activeStack].push_back('u');
-  stacks[activeStack].push_back('m');
-  stacks[activeStack].push_back('m');
-  stacks[activeStack].push_back('y');
-  stacks[activeStack].push_back(5);
+// __TOK_call_extern
+  _extern_6();
 
-  R_A = stacks[activeStack].back();
-  stacks[activeStack].pop_back();
-  R_B = reinterpret_cast<uint64_t>(new GCPointer(R_A, &stacks[activeStack]));
-  stacks[activeStack].push_back(reinterpret_cast<uint64_t>(R_B));
-
-  _extern_9();
-
-  stacks[activeStack].push_back(10);
-
-  _extern_2();
-
+  stacks[activeStack].push_back('r');
   stacks[activeStack].push_back('a');
-  stacks[activeStack].push_back('p');
-  stacks[activeStack].push_back('p');
-  stacks[activeStack].push_back('l');
   stacks[activeStack].push_back('e');
-  stacks[activeStack].push_back('s');
-  stacks[activeStack].push_back(6);
+  stacks[activeStack].push_back('l');
+  stacks[activeStack].push_back('c');
+  stacks[activeStack].push_back(5);
 
+// __TOK_make_pointer
   R_A = stacks[activeStack].back();
   stacks[activeStack].pop_back();
   R_B = reinterpret_cast<uint64_t>(new GCPointer(R_A, &stacks[activeStack]));
   stacks[activeStack].push_back(reinterpret_cast<uint64_t>(R_B));
 
-  };
-  function();
-  function();
-  apples();
-  _extern_9();
+// __TOK_call_extern
+  _extern_10();
 
-  stacks[activeStack].push_back(10);
+  stacks[activeStack].push_back(20);
 
-  _extern_2();
+// __TOK_call_extern
+  _extern_0();
 
-  stacks[activeStack].push_back(2);
+  stacks[activeStack].push_back(0);
 
 
 // __BEGIN_EXTERN_WIND_DOWN
