@@ -1,4 +1,4 @@
-// g++ ./GCLang.cpp -o ./Built/GCLang.exe -O2 -std=gnu++20
+// g++ ./GCLang.cpp -o ./Built/GCLang.exe -O2 -std=gnu++20 -I .
 // g++ ./GCLang.cpp -o ./Built/GCLang -O2 -std=gnu++20 -I .
 
 

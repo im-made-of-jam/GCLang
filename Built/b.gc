@@ -25,6 +25,6 @@ puts{
     drop
 }
 
-"clear" system
+"cls" system
 
 20 exit

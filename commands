@@ -3,3 +3,5 @@ git remote add origin https://github.com/im-made-of-jam/GCLang.git
 git add -A
 git commit "*message*"
 git push --set-upstream origin main -f
+
+g++ ./GCLang.cpp -o ./Built/GCLang.exe -O2 -std=gnu++20 -I .

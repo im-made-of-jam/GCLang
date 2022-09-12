@@ -38,7 +38,7 @@ std::ofstream gcoutFile; // output stream for "GCOut.gco"
 
 // __BEGIN_EXTERN_INTERNALS
 
-// dereference a GCPointer and reverse the string
+// dereference a GCPointer and reverse the string made by said pointer, the return string made by said pointer
 std::string _extern_deref_and_reverse(){    
     std::string reversed;
     
@@ -189,6 +189,13 @@ stacks[0].reserve(262144);
 stacks[0].reserve(65536);
 stacks[0].reserve(65536);
 stacks[0].reserve(65536);
+  stacks[activeStack].push_back(0);
+
+// __TOK_switch_stack
+  R_A = stacks[activeStack].back();
+  stacks[activeStack].pop_back();
+  activeStack = R_A;
+
 // __TOK_func_decl
   auto puts = [&](){
 // __TOK_dereference
@@ -256,15 +263,10 @@ stacks[0].reserve(65536);
 
 // __TOK_func_end
   };
-// __TOK_call_extern
-  _extern_6();
-
-  stacks[activeStack].push_back('r');
-  stacks[activeStack].push_back('a');
-  stacks[activeStack].push_back('e');
+  stacks[activeStack].push_back('s');
   stacks[activeStack].push_back('l');
   stacks[activeStack].push_back('c');
-  stacks[activeStack].push_back(5);
+  stacks[activeStack].push_back(3);
 
 // __TOK_make_pointer
   R_A = stacks[activeStack].back();
