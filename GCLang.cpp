@@ -85,7 +85,7 @@ struct MainArgs{
     bool doNotOverwrite = false; // do not overwrite the output file if it already exists
 
     bool generateCPP = true;
-    bool generatePyASM = false;
+    bool generateBytecode = false;
 
     bool callCPP = true; // call a c++ compiler after everything else is done
     std::string CPPCompiler = "g++";
@@ -96,10 +96,10 @@ struct MainArgs{
     std::string CPPWindDownPath = "Built/Generation/stdLibWindDown.cpp"; // the path to the c++ standard library wind down file
 
     // same as above, but switch "c++" for "pyasm"
-    bool includeASMStdLib = true;
-    std::string ASMStdLibPath = "Build/Generation/stdLib.pyasm";
-    std::string ASMStdLibAliasPath = "Built/Generation/ASMStdLib.alias";
-    std::string ASMWindDownPath = "Build/Generation/stdLibWindDown.pyasm";
+    bool includeBCStdLib = true;
+    std::string BCStdLibPath = "Build/Generation/stdLib.pyasm";
+    std::string BCStdLibAliasPath = "Built/Generation/ASMStdLib.alias";
+    std::string BCWindDownPath = "Build/Generation/stdLibWindDown.pyasm";
 };
 
 int main(int argc, char* argv[]){
@@ -271,7 +271,7 @@ int main(int argc, char* argv[]){
             else if(std::string{"-A"}.compare(argv[i]) == 0){
                 args.callCPP = false;
                 args.generateCPP = false;
-                args.generatePyASM = true;
+                args.generateBytecode = true;
             }
 
             // -T for dumping tokens when done
@@ -528,6 +528,16 @@ int main(int argc, char* argv[]){
 
     if(args.generateCPP){
         if(!generateCpp(args.intermediateName, externsProcessed, args.includeCPPStdlib, args.CPPStdLibPath, args.CPPWindDownPath)){
+            std::cout << "code gen failure\n";
+
+            return -1;
+        }
+    }
+
+    if(args.generateBytecode){
+        std::string outputName = std::string{args.outputFilename} + ".gcb";
+
+        if(!generateBytecode(outputName, externsProcessed, args.includeBCStdLib, args.BCStdLibPath, args.BCWindDownPath)){
             std::cout << "code gen failure\n";
 
             return -1;
