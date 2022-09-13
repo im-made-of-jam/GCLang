@@ -263,12 +263,10 @@ stacks[0].reserve(65536);
 
 // __TOK_func_end
   };
-  stacks[activeStack].push_back('r');
-  stacks[activeStack].push_back('a');
-  stacks[activeStack].push_back('e');
+  stacks[activeStack].push_back('s');
   stacks[activeStack].push_back('l');
   stacks[activeStack].push_back('c');
-  stacks[activeStack].push_back(5);
+  stacks[activeStack].push_back(3);
 
 // __TOK_make_pointer
   R_A = stacks[activeStack].back();

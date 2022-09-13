@@ -296,8 +296,12 @@ int main(int argc, char* argv[]){
 
     std::vector<Token> readyForGen;
 
-    if(!tokeniseAndProcess(args, readyForGen));
-    
+    if(!tokeniseAndProcess(args, readyForGen)){
+        std::cout << "tokeniseAndProcess() failure\n";
+
+        return -1;
+    }
+
     if(args.dumpTokens){
         for(Token k : readyForGen){
             std::cout << "type: " << getTokenName(k.type) << '\n';
