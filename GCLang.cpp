@@ -1,10 +1,10 @@
 // g++ ./GCLang.cpp -o ./Built/GCLang.exe -O2 -std=gnu++20 -I .
 // g++ ./GCLang.cpp -o ./Built/GCLang -O2 -std=gnu++20 -I .
 
-
 // most things should still work perfectly fine if this is built on a 32 bit machine
 //  however there is no guarantee that GC pointers will work on anything other than 64 bit
 
+#define UNICODE
 
 #include <iostream>
 #include <fstream>
@@ -14,11 +14,13 @@
 
 #include "Misc/loadFile.hpp"
 #include "Misc/removeComments.hpp"
+#include "Misc/mainArgs.hpp"
 #include "Processing/aggregation.hpp"
 #include "Processing/aliases.hpp"
 #include "Processing/functions.hpp"
 #include "Tokens/MainTokens.hpp"
 #include "Generation/codeGen.hpp"
+#include "compile.cpp"
 
 void printHelp(){
     std::cout << "GC compiler help\n";
@@ -68,39 +70,6 @@ void printHelp(){
     std::cout << "  -h\n";
     std::cout << "    this message\n";
 }
-
-struct MainArgs{
-    bool debug = false;
-    bool deDebug = false;
-    bool deDeDebug = false;
-
-    std::string inputFilename = "";  // name of input file
-    std::string intermediateName = "__GCCompilerIntermediate.cpp"; // name of intermediate file
-    std::string outputFilename = ""; // name of output file
-
-    bool deleteIntermediate = true; // delete any intermidiate files after we are done with them
-
-    bool dumpTokens = false; // output every token's type and content once the last processing step has been completed
-
-    bool doNotOverwrite = false; // do not overwrite the output file if it already exists
-
-    bool generateCPP = true;
-    bool generateBytecode = false;
-
-    bool callCPP = true; // call a c++ compiler after everything else is done
-    std::string CPPCompiler = "g++";
-
-    bool includeCPPStdlib = true; // include the stdLib file at the top of the c++ file
-    std::string CPPStdLibPath = "Built/Generation/stdLib.cpp"; // the path to the c++ standard library
-    std::string CPPStdLibAliasPath = "Built/Generation/CPPStdLib.alias"; // the path to the c++ alias file
-    std::string CPPWindDownPath = "Built/Generation/stdLibWindDown.cpp"; // the path to the c++ standard library wind down file
-
-    // same as above, but switch "c++" for "pyasm"
-    bool includeBCStdLib = true;
-    std::string BCStdLibPath = "Build/Generation/stdLib.pyasm";
-    std::string BCStdLibAliasPath = "Built/Generation/ASMStdLib.alias";
-    std::string BCWindDownPath = "Build/Generation/stdLibWindDown.pyasm";
-};
 
 int main(int argc, char* argv[]){
     MainArgs args;
@@ -325,201 +294,12 @@ int main(int argc, char* argv[]){
         }
     }
 
-    // raw lines from input file
-    std::vector<std::string> lines;
+    std::vector<Token> readyForGen;
 
-    if(!loadFile(lines, args.inputFilename)){
-        std::cout << "could not open input file";
-        return -1;
-    }
-
-    if(lines.size() == 0){
-        std::cout << "input file is empty\n";
-
-        return 0;
-    }
-
-    if(args.deDebug){
-        std::cout << lines.size() << " lines\n";
-    }
-
-    std::vector<std::string> commentsRemoved;
-
-    if(!removeComments(lines, commentsRemoved, '#')){
-        std::cout << "could not remove comments\n";
-
-        return -1;
-    }
-
-    if(args.deDebug){
-        std::cout << commentsRemoved.size() << " lines with comments removed\n";
-    }
-
-    // clear vector of lines to free up some memory
-    lines.clear();
-    lines.shrink_to_fit();
-
-    // tokenising expects one honking massive string rather than a vector of strings so now we sort that out
-    std::string longLine;
-
-    for(std::string str : commentsRemoved){
-        longLine += (str + ' ');
-    }
-
-    commentsRemoved.clear();
-    commentsRemoved.shrink_to_fit();
-
-    // list of every token without any additional passes
-    std::vector<Token> initialTokenList;
-
-    // initial tokenisation
-    if(!tokenise(initialTokenList, longLine)){
-        std::cout << "failed at tokenisation\n";
-
-        std::cout << initialTokenList.at(initialTokenList.size() - 1).content;
-
-        return -1;
-    }
-
-    if(args.deDebug){
-        std::cout << initialTokenList.size() << " tokens at first pass\n";
-    }
-
-    if(args.deDeDebug){
-        std::cout << "last token:\n";
-        std::cout << "  type: " << getTokenName(  initialTokenList.at(  initialTokenList.size() - 1).type);
-        std::cout << "  content: '" << initialTokenList.at(  initialTokenList.size() - 1).content << "'\n";;
-    }
-
-    // all strings of separator tokens replaced by a single separator token
-    std::vector<Token> separatorsSmallList;
-
-    if(!removeDuplicateSeparators(initialTokenList, separatorsSmallList)){
-        std::cout << "failed at whitespace aggregation\n";
-        return -1;
-    }
-
-    if(args.deDebug){
-        std::cout << separatorsSmallList.size() << " with separators minimised\n";
-    }
-
-    // memory freeing operations
-    initialTokenList.clear();
-    initialTokenList.shrink_to_fit();
-
-    // strings of misc are combined into one token with longer content instead of many tokens with small content
-    std::vector<Token> miscCombined;
-
-    if(!combineMiscTokens(separatorsSmallList, miscCombined)){
-        std::cout << "failed at misc aggregation\n";
-        return -1;
-    }
-
-    if(args.deDebug){
-        std::cout << miscCombined.size() << " tokens with miscellaneous combined\n";
-    }
-
-    separatorsSmallList.clear();
-    separatorsSmallList.shrink_to_fit();
-
-    std::vector<Token> stringRunsMade;
-
-    if(!stringAggregation(miscCombined, stringRunsMade)){
-        std::cout << "failed at string aggregation\n";
-
-        return -1;
-    }
-
-    miscCombined.clear();
-    miscCombined.shrink_to_fit();
-
-    // strings of number tokens are combined into single tokens similar to misc processing
-    std::vector<Token> numbersProcessedList;
-
-    if(!combineNumberTokens(stringRunsMade, numbersProcessedList)){
-        std::cout << "failed at number combining\n";
-
-        return -1;
-    }
-
-    if(args.deDebug){
-        std::cout << numbersProcessedList.size() << " tokens with numbers combined\n";
-    }
-
-    miscCombined.clear();
-    miscCombined.shrink_to_fit();
-
-    // aliases of external functions are changed from words into @ symbols
-    std::vector<Token> aliasesProcessedList;
-
-    std::vector<strPair> aliasNames;
-    if(!getAliases(args.CPPStdLibAliasPath, aliasNames)){
-        std::cout << "could not generate aliases\n";
-    }
-
-    // this step also adds a call of the "exit" stdlib function at the end of the program
-    if(!convertAliasesToCalls(numbersProcessedList, aliasesProcessedList, aliasNames)){
-        std::cout << "failed at extern alias handling\n";
-
-        return -1;
-    }
-
-    if(args.deDebug){
-        std::cout << aliasesProcessedList.size() << " tokens with aliases processed\n";
-    }
-
-    numbersProcessedList.clear();
-    numbersProcessedList.shrink_to_fit();
-
-    // keywords and aliases are turned from misc tokens into their respective proper tokens
-    std::vector<Token> keywordsProcessed;
-
-    if(!keyWordsToTokens(aliasesProcessedList, keywordsProcessed)){
-        std::cout << "failed at keyword processing\n";
-
-        return -1;
-    }
-
-    if(args.deDebug){
-        std::cout << keywordsProcessed.size() << " tokens after keywords are processed\n";
-    }
-
-    aliasesProcessedList.clear();
-    aliasesProcessedList.shrink_to_fit();
-
-    std::vector<Token> functionsMade;
+    if(!tokeniseAndProcess(args, readyForGen));
     
-    if(!makeFunctions(keywordsProcessed, functionsMade, aliasNames)){
-        std::cout << "failed at function generation\n";
-
-        return -1;
-    }
-
-    if(args.deDebug){
-        std::cout << functionsMade.size() << " tokens after function handling\n";
-    }
-
-    keywordsProcessed.clear();
-    keywordsProcessed.shrink_to_fit();
-
-    // external functions are changed from being misc tokens into call_extern tokens
-    std::vector<Token> externsProcessed;
-
-    if(!convertExternCalls(functionsMade, externsProcessed)){
-        std::cout << "failed at extern handling\n";
-
-        return -1;
-    }
-
-    if(args.deDebug){
-        std::cout << externsProcessed.size() << " tokens after extern tokenisation\n";
-    }
-
-    keywordsProcessed.clear();
-    keywordsProcessed.shrink_to_fit();
-
     if(args.dumpTokens){
-        for(Token k : externsProcessed){
+        for(Token k : readyForGen){
             std::cout << "type: " << getTokenName(k.type) << '\n';
             std::cout << "content: \"" << k.content << "\"\n\n";
         }
@@ -527,7 +307,7 @@ int main(int argc, char* argv[]){
 
 
     if(args.generateCPP){
-        if(!generateCpp(args.intermediateName, externsProcessed, args.includeCPPStdlib, args.CPPStdLibPath, args.CPPWindDownPath)){
+        if(!generateCpp(args.intermediateName, readyForGen, args.includeCPPStdlib, args.CPPStdLibPath, args.CPPWindDownPath)){
             std::cout << "code gen failure\n";
 
             return -1;
@@ -537,14 +317,12 @@ int main(int argc, char* argv[]){
     if(args.generateBytecode){
         std::string outputName = std::string{args.outputFilename} + ".gcb";
 
-        if(!generateBytecode(outputName, externsProcessed, args.includeBCStdLib, args.BCStdLibPath, args.BCWindDownPath)){
+        if(!generateBytecode(outputName, readyForGen, args.includeBCStdLib, args.BCStdLibPath, args.BCWindDownPath)){
             std::cout << "code gen failure\n";
 
             return -1;
         }
     }
-
-    std::cout << longLine << '\n';
 
     if(args.callCPP){
         std::string sysString = args.CPPCompiler + ' ';
