@@ -1,0 +1,41 @@
+a word is simply 4 bytes
+
+an instruction is 4 bytes long and shall be both written to the executable and read from the executable in little-endian format
+
+the first byte of an instruction encodes the length of said instruction, including additional information such as a memory address
+    this byte is unsigned, and as such, an instruction may have a maximum length of 255 words
+    should this value be equal to 0, the instruction shall be treated as if it were a no-op
+the second and third bytes of the instruction encode the type of the instruction
+the fourth byte of the instruction encodes additional information
+    the first 6 bits of this byte are used for anything relevant, while the last two bits are used for encoding a stack number should the instruction need it
+
+
+
+an if else statement is essentially
+"""
+    if (!stack.pop()){ goto ifElse }     // this is the ifBegin instruction
+        *code*
+        goto ifEnd                       // this is an ifEnd instruction
+    ifElse:
+        *code*
+    ifEnd:                               // this is also an ifEnd instruction
+    *code outside of if statement*
+"""
+
+additional shall be the address of the ifElse
+additional2 shall be the address of the instruction after the final ifEnd
+
+an if without an else is essentially the same, but with no code after the ifElse label
+
+
+upon encountering a loopBegin instruction:
+    the current IP is pushed to the loopStack
+    then the address of the related loopEnd instruction is pushed to the loopStack
+
+upon encountering a loopEnd instruction:
+    the loopStack is popped and the value discarded
+    the IP is set to the value of the next pop, which is the address fo the related loopBegin instruction
+
+upon encountering a loopBreak instruction:
+    the IP is set to the value of the first pop
+    the loopStack is then popped again but this time the value is discarded
