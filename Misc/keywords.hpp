@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 
+// every built in keyword
 const std::vector<std::string> builtInKeywords = {"if", 
                                                   "else",
                                                   "endif", 

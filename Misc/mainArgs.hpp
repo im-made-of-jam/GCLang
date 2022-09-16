@@ -20,7 +20,7 @@ struct MainArgs{
     bool generateCPP = true;
     bool generateBytecode = false;
 
-    bool callCPP = true; // call a c++ compiler after everything else is done
+    bool callCPP = true; // call a c++ compiler after everything else is done, the default
     std::string CPPCompiler = "g++";
 
     bool includeCPPStdlib = true; // include the stdLib file at the top of the c++ file
@@ -28,9 +28,9 @@ struct MainArgs{
     std::string CPPStdLibAliasPath = "Built/Generation/CPPStdLib.alias"; // the path to the c++ alias file
     std::string CPPWindDownPath = "Built/Generation/stdLibWindDown.cpp"; // the path to the c++ standard library wind down file
 
-    // same as above, but switch "c++" for "pyasm"
+    // same as above, but switch "c++" for "bytecode"
     bool includeBCStdLib = true;
-    std::string BCStdLibPath = "Build/Generation/stdLib.pyasm";
+    std::string BCStdLibPath = "Build/Generation/stdLib.gcbc";
     std::string BCStdLibAliasPath = "Built/Generation/ASMStdLib.alias";
-    std::string BCWindDownPath = "Build/Generation/stdLibWindDown.pyasm";
+    std::string BCWindDownPath = "Build/Generation/stdLibWindDown.gcbc";
 };

@@ -9,10 +9,12 @@
 
 #include "tokens.hpp"
 
-// ensure there is n even number of quotes so that the program does not contain a malformed string
+#warning the verification functions acting upon a string break now that keywords and token replacements exist. please fix
+
+// ensure there is an even number of quotes so that the program does not contain a malformed string
 bool verifyStringQuotes(const std::string& str){
     uint64_t count = 0;
-    
+
     for(char c : str){
         if(c == '"'){
             ++count;
@@ -26,11 +28,13 @@ bool verifyStringQuotes(const std::string& str){
     return true;
 }
 
+// verify that the function brackets are closed properly, and that there is never a function definition from within another function definition
 bool verifyFuncBrackets(const std::string& str){
     bool inFunc = false;
 
     for(char c : str){
         if(c == '{'){
+            // another definition from within a function
             if(inFunc){
                 return false;
             }
@@ -38,6 +42,7 @@ bool verifyFuncBrackets(const std::string& str){
             inFunc = true;
         }
         if(c == '}'){
+            // closing a function while not inside of a function
             if(!inFunc){
                 return false;
             }
@@ -49,6 +54,7 @@ bool verifyFuncBrackets(const std::string& str){
     return !inFunc;
 }
 
+// ensure that all loops are closed, and that there is never a break outside of a loop
 bool verifyLoopBrackets(const std::string& str){
     int32_t depth = 0;
 
@@ -74,6 +80,7 @@ bool verifyLoopBrackets(const std::string& str){
     return !depth;
 }
 
+// ensure that a number fits inside of 64 bits, and all of the chars in its digits are valid
 bool verifyNumber(const std::string& n){
     try{
         std::stoll(n);

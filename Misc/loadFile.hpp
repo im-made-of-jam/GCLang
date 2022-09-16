@@ -8,6 +8,8 @@
 #include <iostream>
 #include <fstream>
 
+// loads a file by filename into a std::vector<std::string>
+// requires c++20 or above doe to std::filesystem
 bool loadFile(std::vector<std::string>& lines, const std::string& filename){
     std::ifstream file;
 

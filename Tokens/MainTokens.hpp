@@ -37,7 +37,7 @@ bool tokenise(std::vector<Token>& tkList, const std::string& source){
         if(inString){
             if(c == '"'){ // end o the string
                 inString = false; // tell the rest of the function we are no longer in a string
-                
+
                 // not used for anything as of yet but it is here for when it is used
                 tkList.push_back(Token(TOK_string_end,
                                        std::string{std::to_string(strLength)}
@@ -184,7 +184,7 @@ bool tokenise(std::vector<Token>& tkList, const std::string& source){
                 break;
             }
 
-            // also treat numbers similarly the only difference bein the content in the token
+            // also treat numbers similarly the only difference being the content in the token
             case '0':
             case '1':
             case '2':
@@ -299,7 +299,7 @@ std::string getTokenName(uint64_t token){
 
         case TOK_string_end:
             return std::string{"string end"};
-        
+
         case TOK_string_crun:
             return std::string{"string character run"};
     }
