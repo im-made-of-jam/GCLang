@@ -10,6 +10,7 @@
 #include <vector>
 #include <stdexcept>
 #include <bitset>
+#include <ios>
 
 #include "tokens.hpp"
 
@@ -70,7 +71,7 @@ static std::vector<uint32_t> makeInstr(uint32_t type, uint32_t stack, std::vecto
 
     // see explanations.txt
     // get type in right position
-    uint32_t Type = (type & 0xFFFF) << 2;
+    uint32_t Type = (type & 0xFFFF) << 8;
 
     // get stack in right position
     uint32_t Stack = stack & 0b11;
@@ -99,15 +100,18 @@ static std::vector<uint32_t> makeInstr(uint32_t type, uint32_t stack = 0){
 bool generateBytecode(const std::string filename, std::vector<Token>& writeToFile, bool includeStdlib, const std::string stdLibPath, const std::string windDownPath){
     std::filesystem::remove(filename);
 
+    // stacks for keeping track of pointers for ifs, loops, and functions
     std::vector<uint64_t> ifStack;
     std::vector<uint64_t> loopStack;
     std::vector<uint64_t> fnStack;
 
+    // the actoal output file itself
     std::ofstream oFile;
+    oFile.open(filename, std::ios::out | std::ios::binary);
 
-    oFile.open(filename);
-
+    // the content of a token
     std::vector<uint32_t> content;
+    // the raw instruction to be written to the file
     std::vector<uint32_t> instr;
 
     auto clearContent = [&](){
@@ -115,6 +119,13 @@ bool generateBytecode(const std::string filename, std::vector<Token>& writeToFil
         content.shrink_to_fit();
         instr.clear();
         instr.shrink_to_fit();
+    };
+
+    auto output = [&](uint32_t outputThis){
+        oFile << static_cast<char>(outputThis >> 24);
+        oFile << static_cast<char>(outputThis >> 16 & 0xFF);
+        oFile << static_cast<char>(outputThis >> 8  & 0xFF);
+        oFile << static_cast<char>(outputThis & 0xFF);
     };
 
     for(Token tk : writeToFile){
@@ -126,12 +137,12 @@ bool generateBytecode(const std::string filename, std::vector<Token>& writeToFil
                     uint64_t value = stoll(tk.content);
 
                     content.push_back(value >> 32);
-                    content.push_back(value & 0xFFFFFFFF);
-#error this doesnt work
+                    content.push_back(value);
+
                     instr = _raw::makeInstr(_raw::push, 3, content);
 
                     for(uint32_t t : instr){
-                        oFile << t;
+                        output(t);
 
                         std::cout << std::hex << t << '\n';
                     }

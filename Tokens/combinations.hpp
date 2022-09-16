@@ -9,17 +9,24 @@
 #include "Tokens/tokenVerifications.hpp"
 #include "Tokens/MainTokens.hpp"
 
-bool combineNumberTokens(std::vector<Token>& inputList, std::vector<Token>& tkList){ // combine strings of number tokens into one number_combo token
+// combine strings of number tokens into one number_combo token
+bool combineNumberTokens(std::vector<Token>& inputList, std::vector<Token>& tkList){
+    // token from the list
     Token listTok(TOK_error);
+    // the token we use for the current loop iteration
     Token workingTok(TOK_num_combo);
 
     for(uint64_t i = 0; i < inputList.size(); ++i){
         listTok = inputList.at(i);
 
         if(listTok.type == TOK_num_digit){
+            // workingTok.content(std::string) += listTok.content(std::string)
+            //   effectively add one digit to the current number
             workingTok.content += listTok.content;
 
+            // if next character is still within range
             if((i + 1) <= inputList.size()){
+                // if next character is not another number then were done with this token and can add it to the list and start over
                 if(inputList.at(i + 1).type != TOK_num_digit){
                     if(!verifyNumber(workingTok.content)){
                         return false;
@@ -39,11 +46,13 @@ bool combineNumberTokens(std::vector<Token>& inputList, std::vector<Token>& tkLi
     return true;
 }
 
-bool removeDuplicateSeparators(const std::vector<Token>& inputList, std::vector<Token>& tkList){ // not necessarily combine more get rid of strings and replace them by a single token
+// not necessarily combine, more get rid of strings and replace them by a single token
+bool removeDuplicateSeparators(const std::vector<Token>& inputList, std::vector<Token>& tkList){
     bool lastWasSep = false;
 
     for(uint64_t i = 0; i < inputList.size(); ++i){
         if(inputList.at(i).type == TOK_separator){
+            // make sure no more than one in a row
             if(lastWasSep){
                 continue;
             }
@@ -61,7 +70,8 @@ bool removeDuplicateSeparators(const std::vector<Token>& inputList, std::vector<
     return true;
 }
 
-bool combineMiscTokens(std::vector<Token>& inputList, std::vector<Token>& tkList){ // combine strings of misc tokens into misc_combo tokens
+// combine strings of misc tokens into misc_combo tokens. similar to combineNumberTokens but with TOK_misc instead of TOK_num_digit
+bool combineMiscTokens(std::vector<Token>& inputList, std::vector<Token>& tkList){
     Token listTok(TOK_error);
     Token workingTok(TOK_misc_combo);
 
@@ -87,6 +97,7 @@ bool combineMiscTokens(std::vector<Token>& inputList, std::vector<Token>& tkList
     return true;
 }
 
+
 bool convertExternCalls(const std::vector<Token>& inputList, std::vector<Token>& tkList){
     // list size of one means only whitespace, so no need to worry about that case
     // instead we worry about list size 2, where the first token gets ignored in afvour of the second with main behaviour
@@ -96,6 +107,7 @@ bool convertExternCalls(const std::vector<Token>& inputList, std::vector<Token>&
         return true;
     }
 
+    // extern calls always come in a pair of two tokens, a TOK_call_extern followed by a TOK_num_combo, hence, we have a pair to ensure that
     Token tkPair[2] = {Token(TOK_misc), Token(TOK_misc)};
 
     for(uint64_t i = 0; i < inputList.size() - 2; ++i){
