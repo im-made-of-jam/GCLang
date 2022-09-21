@@ -100,12 +100,15 @@ bool combineMiscTokens(std::vector<Token>& inputList, std::vector<Token>& tkList
 
 bool convertExternCalls(const std::vector<Token>& inputList, std::vector<Token>& tkList){
     // list size of one means only whitespace, so no need to worry about that case
-    // instead we worry about list size 2, where the first token gets ignored in afvour of the second with main behaviour
+    // instead we worry about list size 2, where the first token gets ignored in favour of the second with main behaviour
     // instead we just make the lists equal then return. this works
     if(inputList.size() == 2){
         tkList = {inputList[0], inputList[1]};
         return true;
     }
+
+    // this is needed because if the very last token is associated with an extern call then it prevents it from being output
+    bool lastWasExtern = false;
 
     // extern calls always come in a pair of two tokens, a TOK_call_extern followed by a TOK_num_combo, hence, we have a pair to ensure that
     Token tkPair[2] = {Token(TOK_misc), Token(TOK_misc)};
@@ -117,7 +120,9 @@ bool convertExternCalls(const std::vector<Token>& inputList, std::vector<Token>&
         if(tkPair[0].type == TOK_call_extern){
             if(tkPair[1].type == TOK_num_combo){
                 tkList.push_back(Token(TOK_call_extern, tkPair[1].content));
-                ++i;
+                i += 1;
+
+                lastWasExtern = true;
             }
             else{
                 std::cout << "extern with no identifier immediately following\n";
@@ -127,10 +132,13 @@ bool convertExternCalls(const std::vector<Token>& inputList, std::vector<Token>&
         }
         else{
             tkList.push_back(tkPair[0]);
+            lastWasExtern = false;
         }
     }
 
-    tkList.push_back(tkPair[1]);
+    if(!lastWasExtern){
+        tkList.push_back(tkPair[1]);
+    }
 
     return true;
 }

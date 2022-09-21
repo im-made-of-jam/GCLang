@@ -55,18 +55,13 @@ bool makeFunctions(std::vector<Token>& inputList, std::vector<Token>& tkList, st
 
         if(!strInVector(intermediate.at(i).content, funcNames)){
             tkList.push_back(intermediate.at(i));
-            
+
             continue;
         }
 
         tkList.push_back(Token(TOK_func_call, intermediate.at(i).content));
     }
-    
-    for(Token tk : intermediate){
-        std::cout << "Token of type " << getTokenName(tk.type);
-        std::cout << "\n with content " << tk.content << "\n\n";
-    }
-    
+
     return true;
 }
 

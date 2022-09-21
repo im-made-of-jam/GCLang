@@ -66,13 +66,14 @@ bool tokeniseAndProcess(MainArgs args, std::vector<Token>& output){
     }
 
     if(args.deDebug){
-        std::cout << initialTokenList.size() << " tokens at first pass\n";
+        std::cout << initialTokenList.size() << " tokens at initial tokenisation - - - - - - - - - -\n";
     }
 
     if(args.deDeDebug){
-        std::cout << "last token:\n";
-        std::cout << "  type: " << getTokenName(  initialTokenList.at(  initialTokenList.size() - 1).type);
-        std::cout << "  content: '" << initialTokenList.at(  initialTokenList.size() - 1).content << "'\n";;
+        for(Token tk : initialTokenList){
+            std::cout << "token of type:  " << getTokenName(tk.type) << '\n';
+            std::cout << "  with content: " << tk.content << '\n';
+        }
     }
 
     // all strings of separator tokens replaced by a single separator token
@@ -84,7 +85,13 @@ bool tokeniseAndProcess(MainArgs args, std::vector<Token>& output){
     }
 
     if(args.deDebug){
-        std::cout << separatorsSmallList.size() << " with separators minimised\n";
+        std::cout << separatorsSmallList.size() << " with separators minimised - - - - - - - - - -\n";
+    }
+    if(args.deDeDebug){
+        for(Token tk : separatorsSmallList){
+            std::cout << "token of type:  " << getTokenName(tk.type) << '\n';
+            std::cout << "  with content: " << tk.content << '\n';
+        }
     }
 
     // memory freeing operations
@@ -100,7 +107,13 @@ bool tokeniseAndProcess(MainArgs args, std::vector<Token>& output){
     }
 
     if(args.deDebug){
-        std::cout << miscCombined.size() << " tokens with miscellaneous combined\n";
+        std::cout << miscCombined.size() << " tokens with miscellaneous combined - - - - - - - - - -\n";
+    }
+    if(args.deDeDebug){
+        for(Token tk : miscCombined){
+            std::cout << "token of type:  " << getTokenName(tk.type) << '\n';
+            std::cout << "  with content: " << tk.content << '\n';
+        }
     }
 
     separatorsSmallList.clear();
@@ -127,7 +140,13 @@ bool tokeniseAndProcess(MainArgs args, std::vector<Token>& output){
     }
 
     if(args.deDebug){
-        std::cout << numbersProcessedList.size() << " tokens with numbers combined\n";
+        std::cout << numbersProcessedList.size() << " tokens with numbers combined - - - - - - - - - -\n";
+    }
+    if(args.deDeDebug){
+        for(Token tk : numbersProcessedList){
+            std::cout << "token of type:  " << getTokenName(tk.type) << '\n';
+            std::cout << "  with content: " << tk.content << '\n';
+        }
     }
 
     miscCombined.clear();
@@ -141,7 +160,6 @@ bool tokeniseAndProcess(MainArgs args, std::vector<Token>& output){
         std::cout << "could not generate aliases\n";
     }
 
-    // this step also adds a call of the "exit" stdlib function at the end of the program
     if(!convertAliasesToCalls(numbersProcessedList, aliasesProcessedList, aliasNames)){
         std::cout << "failed at extern alias handling\n";
 
@@ -149,7 +167,13 @@ bool tokeniseAndProcess(MainArgs args, std::vector<Token>& output){
     }
 
     if(args.deDebug){
-        std::cout << aliasesProcessedList.size() << " tokens with aliases processed\n";
+        std::cout << aliasesProcessedList.size() << " tokens with aliases processed - - - - - - - - - -\n";
+    }
+    if(args.deDeDebug){
+        for(Token tk : aliasesProcessedList){
+            std::cout << "token of type:  " << getTokenName(tk.type) << '\n';
+            std::cout << "  with content: " << tk.content << '\n';
+        }
     }
 
     numbersProcessedList.clear();
@@ -165,14 +189,20 @@ bool tokeniseAndProcess(MainArgs args, std::vector<Token>& output){
     }
 
     if(args.deDebug){
-        std::cout << keywordsProcessed.size() << " tokens after keywords are processed\n";
+        std::cout << keywordsProcessed.size() << " tokens after keywords are processed - - - - - - - - - -\n";
+    }
+    if(args.deDeDebug){
+        for(Token tk : keywordsProcessed){
+            std::cout << "token of type:  " << getTokenName(tk.type) << '\n';
+            std::cout << "  with content: " << tk.content << '\n';
+        }
     }
 
     aliasesProcessedList.clear();
     aliasesProcessedList.shrink_to_fit();
 
     std::vector<Token> functionsMade;
-    
+
     if(!makeFunctions(keywordsProcessed, functionsMade, aliasNames)){
         std::cout << "failed at function generation\n";
 
@@ -180,7 +210,13 @@ bool tokeniseAndProcess(MainArgs args, std::vector<Token>& output){
     }
 
     if(args.deDebug){
-        std::cout << functionsMade.size() << " tokens after function handling\n";
+        std::cout << functionsMade.size() << " tokens after function handling - - - - - - - - - -\n";
+    }
+    if(args.deDeDebug){
+        for(Token tk : functionsMade){
+            std::cout << "token of type:  " << getTokenName(tk.type) << '\n';
+            std::cout << "  with content: " << tk.content << '\n';
+        }
     }
 
     keywordsProcessed.clear();
@@ -193,7 +229,13 @@ bool tokeniseAndProcess(MainArgs args, std::vector<Token>& output){
     }
 
     if(args.deDebug){
-        std::cout << output.size() << " tokens after extern tokenisation\n";
+        std::cout << output.size() << " tokens after extern tokenisation - - - - - - - - - -\n";
+    }
+    if(args.deDeDebug){
+        for(Token tk : output){
+            std::cout << "token of type:  " << getTokenName(tk.type) << '\n';
+            std::cout << "  with content: " << tk.content << '\n';
+        }
     }
 
     keywordsProcessed.clear();

@@ -64,9 +64,6 @@ bool keyWordsToTokens(const std::vector<Token>& inputList, std::vector<Token>& t
             else if(tk.content == "exit"){
                 tkList.push_back(Token(TOK_misc, "@0"));
             }
-            else if(tk.content == "print"){
-                tkList.push_back(Token(TOK_misc, "@1"));
-            }
             else if(tk.content == "drop"){
                 tkList.push_back(Token(TOK_stack_drop, "drop"));
             }
