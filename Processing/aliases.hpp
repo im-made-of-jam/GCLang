@@ -58,13 +58,18 @@ bool getAliases(const std::string& filename, std::vector<strPair>& aliasList){
 }
 
 bool convertAliasesToCalls(std::vector<Token>& inputList, std::vector<Token>& tkList, std::vector<strPair>& aliasList){
+    // for every token
     for(Token tk : inputList){
+        // if it is a token with a word that is not defined
         if(tk.type == TOK_misc || tk.type == TOK_misc_combo){
+            // check it against every string pair
             for(strPair pair : aliasList){
+                // if the token is equal to the alias
                 if(tk.content == pair.first){
-                    tkList.push_back(Token(TOK_call_extern, "@"));
+                    // replace it with what we want
                     tk.type = TOK_num_combo;
                     tk.content = pair.second;
+                    tkList.push_back(Token(TOK_call_extern, "@"));
 
                     break;
                 }

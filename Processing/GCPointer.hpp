@@ -18,7 +18,7 @@ struct GCPointer{
         // things seem fine so we make the array to the correct size
         // "count + 1" is used due to the first elemenbt of the array being used to store the count of the array
         data = new uint64_t[count + 1];
-        
+
         // speaking of which...
         data[0] = count;
 

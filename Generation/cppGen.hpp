@@ -66,11 +66,11 @@ bool generateCpp(const std::string filename, std::vector<Token>& writeToFile, bo
     oFile << "stacks[0].reserve(65536);\n";
     oFile << "stacks[0].reserve(65536);\n";
     oFile << "stacks[0].reserve(65536);\n";
-    
+
     oFile << std::flush;
 
     std::cout << "\nbegin code gen\n";
-    
+
     for(Token tk : writeToFile){
         std::cout << "Token of type: " << tk.type << "\n with name of '" << getTokenName(tk.type) << "\n with content of '" << tk.content << "'\n\n";
         switch(tk.type){
@@ -305,7 +305,7 @@ bool generateCpp(const std::string filename, std::vector<Token>& writeToFile, bo
 
                 break;
             }
-            
+
             case TOK_error:{
                 std::cout << "error token with content: " + tk.content + "\n";
                 [[fallthrough]];

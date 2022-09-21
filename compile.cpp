@@ -43,7 +43,7 @@ bool tokeniseAndProcess(MainArgs args, std::vector<Token>& output){
     lines.clear();
     lines.shrink_to_fit();
 
-    // tokenising expects one honking massive string rather than a vector of strings so now we sort that out
+    // tokenising expects one massive string rather than a vector of strings so now we sort that out
     std::string longLine;
 
     for(std::string str : commentsRemoved){

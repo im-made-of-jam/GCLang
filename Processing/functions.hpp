@@ -28,7 +28,7 @@ bool makeFunctions(std::vector<Token>& inputList, std::vector<Token>& tkList, st
                     std::cout << "cannot re-declare function\n";
                     std::cout << "with name \"" << inputList.at(i).content << "\"\n";
                 }
-                
+
                 funcNames.push_back(inputList.at(i).content);
 
                 intermediate.push_back(Token(TOK_func_decl, inputList.at(i).content));

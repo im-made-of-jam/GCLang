@@ -191,6 +191,11 @@ stacks[0].reserve(65536);
 stacks[0].reserve(65536);
   stacks[activeStack].push_back(5);
 
+// __TOK_call_extern
+  _extern_1();
+
+  stacks[activeStack].push_back(1);
+
 
 // __BEGIN_EXTERN_WIND_DOWN
 if(gcoutFile.is_open()){

@@ -14,95 +14,88 @@
 
 #include "tokens.hpp"
 
+const std::vector<std::string> builtinNumbers{"0", "1", "2", "3", "5", "9"};
+
 class _raw{
-public:
-enum AllInstrs{
-    add = 0,
-    sub = 1,
-    mul = 2,
-    div = 3,
-    mod = 4,
+    public:
+    enum AllInstrs{
+        add = 0,
+        sub = 1,
+        mul = 2,
+        div = 3,
+        mod = 4,
 
-    invert = 5,
-    equals = 6,
+        invert = 5,
+        equals = 6,
 
-    push = 7,
-    dup = 8,
-    drop = 9,
-    swap = 10,
+        push = 7,
+        dup = 8,
+        drop = 9,
+        swap = 10,
 
-    move = 11,
+        move = 11,
 
-    size = 12,
-    active = 13,
+        size = 12,
+        active = 13,
 
-    ifBegin = 14,
-    ifEnd = 15,
+        ifBegin = 14,
+        ifEnd = 15,
 
-    loopBegin = 16,
-    loopEnd = 17,
-    loopBreak = 18,
+        loopBegin = 16,
+        loopEnd = 17,
+        loopBreak = 18,
 
-    fnCall = 19,
-    fnReturn = 20,
+        fnCall = 19,
+        fnReturn = 20,
 
-    external = 21,
-    builtin = 22,
+        external = 21,
+        builtin = 22,
 
-    ptrMake = 23,
-    ptrDeref = 24,
+        ptrMake = 23,
+        ptrDeref = 24,
 
-    noOp = 32767,
+        noOp = 32767,
 
-    // beginning of debug
+        // beginning of debug
 
-    _dbg_cout_size = 32769,
-};
+        _dbg_cout_size = 32769,
+    };
 
-enum AllStacks{
-    Main = 0,
-    Second = 1,
-    Third = 2,
-    Fourth = 3,
-};
+    enum AllStacks{
+        Main = 0,
+        Second = 1,
+        Third = 2,
+        Fourth = 3,
+    };
 
-std::vector<std::string> builtinNumbers{"0",
-                                        "1",
-                                        "2",
-                                        "3",
-                                        "5",
-                                        "9"
-                                       };
+    static std::vector<uint32_t> makeInstr(uint32_t type, uint32_t stack, std::vector<uint32_t> additionals){
+        std::vector<uint32_t> ret;
 
-static std::vector<uint32_t> makeInstr(uint32_t type, uint32_t stack, std::vector<uint32_t> additionals){
-    std::vector<uint32_t> ret;
+        // see explanations.txt
+        // get type in right position
+        uint32_t Type = (type & 0xFFFF) << 8;
 
-    // see explanations.txt
-    // get type in right position
-    uint32_t Type = (type & 0xFFFF) << 8;
+        // get stack in right position
+        uint32_t Stack = stack & 0b11;
 
-    // get stack in right position
-    uint32_t Stack = stack & 0b11;
+        // get total length of instruction
+        uint32_t Length = ((additionals.size() + 1) & 0xFF) << 24;
 
-    // get total length of instruction
-    uint32_t Length = ((additionals.size() + 1) & 0xFF) << 24;
+        ret.push_back((Type | Stack | Length)); // add instruction
 
-    ret.push_back((Type | Stack | Length)); // add instruction
+        // add additionals
+        for(uint32_t t : additionals){
+            ret.push_back(t);
+        }
 
-    // add additionals
-    for(uint32_t t : additionals){
-        ret.push_back(t);
+        return ret;
     }
 
-    return ret;
-}
+    static std::vector<uint32_t> makeInstr(uint32_t type, uint32_t stack = 0){
+        std::vector<uint32_t> empty;
 
-static std::vector<uint32_t> makeInstr(uint32_t type, uint32_t stack = 0){
-    std::vector<uint32_t> empty;
-
-    return makeInstr(type, stack, empty);
-}
-
+        return makeInstr(type, stack, empty);
+    }
 };
 
 bool generateBytecode(const std::string filename, std::vector<Token>& writeToFile, bool includeStdlib, const std::string stdLibPath, const std::string windDownPath){
@@ -181,7 +174,25 @@ bool generateBytecode(const std::string filename, std::vector<Token>& writeToFil
                 clearContent();
 
                 if(strInVector(tk.content, builtinNumbers)){
-                    ;
+                    // must be a built-in, in which case there is native support
+                    std::vector<uint32_t> number;
+
+                    try{
+                        number.push_back(std::stoi(tk.content));
+                    }
+                    catch(std::out_of_range){
+                        std::cout << "builtin not a builtin\n";
+                        return false;
+                    }
+
+                    instr = _raw::makeInstr(_raw::builtin, 3, number);
+
+                    output(instr[0]);
+                    output(instr[1]);
+                }
+                else{
+                    std::cout << "stdlib support is NOT implemented as of yet, though user defined functions may be used in lieu of this\n";
+                    #warning stdlib implementation
                 }
 
                 break;
@@ -243,7 +254,7 @@ bool generateBytecode(const std::string filename, std::vector<Token>& writeToFil
             case TOK_num_digit:
             case TOK_misc:
             case TOK_misc_combo:
-            case TOK_str_char:
+            case TOK_string_char:
             default:{
                 std::cout << "invalid token of type: " << getTokenName(tk.type) << "\n";
                 std::cout << "         with content: " << tk.content << "\n";
