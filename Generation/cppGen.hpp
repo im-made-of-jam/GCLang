@@ -21,7 +21,7 @@ bool generateCpp(const std::string filename, std::vector<Token>& writeToFile, bo
 
     oFile << "#include <vector>\n";                // needed for stack
     oFile << "#include <cstdint>\n";               // needed for 'register' types
-    oFile << "#include <iostream>\n";              // as much as i dont want it, needed by GCPointer
+    oFile << "#include <iostream>\n";              // as much as it is unwanted, it is needed by GCPointer
     oFile << "\n";
     oFile << "bool exitFlag = false;\n";           // goes true when time to exit
     oFile << "uint64_t R_A = 0;\n";                // 'register' A
@@ -290,7 +290,7 @@ bool generateCpp(const std::string filename, std::vector<Token>& writeToFile, bo
             case TOK_func_decl:{
                 oFile << "// __TOK_func_decl\n";
                 oFile << "  auto " << tk.content << " = [&](){\n";
-                
+
                 break;
             }
             case TOK_func_end:{

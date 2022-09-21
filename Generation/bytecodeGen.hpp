@@ -66,6 +66,14 @@ enum AllStacks{
     Fourth = 3,
 };
 
+std::vector<std::string> builtinNumbers{"0",
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "5",
+                                        "9"
+                                       };
+
 static std::vector<uint32_t> makeInstr(uint32_t type, uint32_t stack, std::vector<uint32_t> additionals){
     std::vector<uint32_t> ret;
 
@@ -154,13 +162,88 @@ bool generateBytecode(const std::string filename, std::vector<Token>& writeToFil
                 }
             }
 
+            // string ops
+
+            case TOK_string_begin:{
+                break;
+            }
+            case TOK_string_end:{
+                break;
+            }
+            case TOK_string_crun:{
+                std::cout << "strings are NOT implemented as of yet, nor supported properly even if you did manage to get one on the stack\n";
+                #warning string implementation
+                break;
+            }
+
+            // extern / builtins get lumped together
+            case TOK_call_extern:{
+                clearContent();
+
+                if(strInVector(tk.content, builtinNumbers)){
+                    ;
+                }
+
+                break;
+            }
+
+            // trivial one word instructions
+            case TOK_add:{
+                clearContent();
+                output(_raw::makeInstr(_raw::add, 3)[0]);
+                break;
+            }
+
+            case TOK_sub:{
+                clearContent();
+                output(_raw::makeInstr(_raw::sub, 3)[0]);
+                break;
+            }
+
+            case TOK_mul:{
+                clearContent();
+                output(_raw::makeInstr(_raw::mul, 3)[0]);
+                break;
+            }
+
+            case TOK_div:{
+                clearContent();
+                output(_raw::makeInstr(_raw::div, 3)[0]);
+                break;
+            }
+
+            case TOK_mod:{
+                clearContent();
+                output(_raw::makeInstr(_raw::mod, 3)[0]);
+                break;
+            }
+
+            case TOK_equals:{
+                clearContent();
+                output(_raw::makeInstr(_raw::equals, 3)[0]);
+                break;
+            }
+
+            case TOK_not:{
+                clearContent();
+                output(_raw::makeInstr(_raw::invert, 3)[0]);
+                break;
+            }
+
             // token types we do nothing for
             case TOK_separator:{
                 break;
             }
 
             // all of the invalid token types
+            case TOK_error:{
+                std::cout << "error token with content " << tk.content;
+                [[fallthrough]];
+            }
             case TOK_num_digit:
+            case TOK_misc:
+            case TOK_misc_combo:
+            case TOK_str_char:
             default:{
                 std::cout << "invalid token of type: " << getTokenName(tk.type) << "\n";
                 std::cout << "         with content: " << tk.content << "\n";
