@@ -38,6 +38,9 @@ void printHelp(){
     std::cout << "\n";
     std::cout << "\n";
     std::cout << "arguments:\n";
+    std::cout << "  -h\n";
+    std::cout << "    print this message\n";
+    std::cout << "\n";
     std::cout << "  -o\n";
     std::cout << "    specify the name of the output file.\n";
     std::cout << "    on windows, the string \".exe\" will automatically be added to the end of this\n";
@@ -67,8 +70,17 @@ void printHelp(){
     std::cout << "    contained within the token, but only once every processing step on the token\n";
     std::cout << "    has been completed\n";
     std::cout << "\n";
-    std::cout << "  -h\n";
-    std::cout << "    this message\n";
+    std::cout << "  -A\n";
+    std::cout << "    generate assembly instead of c++\n";
+    std::cout << "\n";
+    std::cout << "  -B\n";
+    std::cout << "    generate GC bytecode instead of c++\n";
+    std::cout << "\n";
+    std::cout << "  -D\n";
+    std::cout << "  -DD\n";
+    std::cout << "  -DDD\n";
+    std::cout << "    various levels of debugging information\n";
+    std::cout << "\n";
 }
 
 int main(int argc, char* argv[]){
@@ -238,6 +250,13 @@ int main(int argc, char* argv[]){
 
             // -A for generating assembly instead of c++
             else if(std::string{"-A"}.compare(argv[i]) == 0){
+                args.callCPP = false;
+                args.generateCPP = false;
+                args.generateASM = true;
+            }
+
+            // -B for generating bytecode instead of c++
+            else if(std::string{"-B"}.compare(argv[i]) == 0){
                 args.callCPP = false;
                 args.generateCPP = false;
                 args.generateBytecode = true;

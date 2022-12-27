@@ -18,6 +18,7 @@ struct MainArgs{
     bool doNotOverwrite = false; // do not overwrite the output file if it already exists
 
     bool generateCPP = true;
+    bool generateASM = false;
     bool generateBytecode = false;
 
     bool callCPP = true; // call a c++ compiler after everything else is done, the default
