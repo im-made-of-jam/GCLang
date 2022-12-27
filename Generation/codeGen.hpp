@@ -12,5 +12,6 @@
 
 #include "Generation/cppGen.hpp"
 #include "Generation/bytecodeGen.hpp"
+#include "Generation/asmGen.hpp"
 
 #endif /* CODEGEN_HPP */
