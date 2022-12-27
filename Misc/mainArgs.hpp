@@ -31,6 +31,12 @@ struct MainArgs{
     // same as above, but switch "c++" for "bytecode"
     bool includeBCStdLib = true;
     std::string BCStdLibPath = "Build/Generation/stdLib.gcbc";
-    std::string BCStdLibAliasPath = "Built/Generation/ASMStdLib.alias";
+    std::string BCStdLibAliasPath = "Built/Generation/BytecodeStdLib.alias";
     std::string BCWindDownPath = "Build/Generation/stdLibWindDown.gcbc";
+
+    // same as aboce but switch "bytecode" for "asm"
+    bool includeASMStdLib = true;
+    std::string ASMStdLibPath = "Build/Generation/stdLib.s";
+    std::string ASMStdLibAliasPath = "Built/Generation/ASMStdLib.alias";
+    std::string ASMWindDownPath = "Build/Generation/stdLibWindDown.s";
 };
