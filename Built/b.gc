@@ -1,4 +1,4 @@
 # command line build text
 # ./Built/GCLang ./Built/b.gc -o ./bGCOut -I -D -DD -DDD -A
 
-5 puti
+@startup

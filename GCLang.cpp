@@ -39,7 +39,7 @@ void printHelp(){
     std::cout << "\n";
     std::cout << "arguments:\n";
     std::cout << "  -o\n";
-    std::cout << "    specify the name of the otuput file.\n";
+    std::cout << "    specify the name of the output file.\n";
     std::cout << "    on windows, the string \".exe\" will automatically be added to the end of this\n";
     std::cout << "\n";
     std::cout << "  -S\n";

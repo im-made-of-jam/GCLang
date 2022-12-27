@@ -124,6 +124,12 @@ bool convertExternCalls(const std::vector<Token>& inputList, std::vector<Token>&
 
                 lastWasExtern = true;
             }
+            else if(tkPair[1].type == TOK_misc_combo){
+                tkList.push_back(Token(TOK_call_extern, tkPair[1].content));
+                i += 1;
+
+                lastWasExtern = true;
+            }
             else{
                 std::cout << "extern with no identifier immediately following\n";
 
