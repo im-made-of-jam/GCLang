@@ -369,6 +369,16 @@ int main(int argc, char* argv[]){
         #pragma GCC diagnostic pop
     }
 
+    if(args.generateASM){
+        std::string outputName = std::string(args.outputFilename) + ".S";
+
+        if(!generateASM(outputName, readyForGen, args.includeASMStdLib, args.ASMStdLibPath, args.ASMWindDownPath)){
+            std::cout << "code gen failure\n";
+
+            return -1;
+        }
+    }
+
     if(args.deleteIntermediate){
         std::filesystem::remove(args.intermediateName);
     }
