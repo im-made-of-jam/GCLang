@@ -11,6 +11,7 @@ syscall
 ; never returns, exit syscall
 
 
+
 __printChar:
 ; preserve r14
 push r14
@@ -32,9 +33,12 @@ __main:
 
 
 
+push 10
 push 97
 call __printChar
-push 10
+add rsp, 8
 call __printChar
+add rsp, 8
 push 0
 call __exit
+add rsp, 8

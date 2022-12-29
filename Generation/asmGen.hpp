@@ -49,6 +49,7 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
             }
             case TOK_call_extern:{
                 oFile << "call " << tk.content << "\n";
+                oFile << "add rsp, 8\n";
                 break;
             }
             case TOK_separator:{
