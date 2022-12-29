@@ -1,4 +1,7 @@
 # command line build text
 # ./Built/GCLang ./Built/b.gc -o ./bGCOut -I -D -DD -DDD -A
 
-@__startup
+97 @__printChar
+10 @__printChar
+
+0 @__exit

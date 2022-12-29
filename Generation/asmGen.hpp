@@ -37,9 +37,16 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
 
     // every token type from now *should* be executable
     oFile << "segment readable executable\n";
+    oFile << "__main:\n";
+    oFile << "\n\n\n";
 
     for(Token tk : writeToFile){
         switch(tk.type){
+            case TOK_num_combo:{
+                oFile << "push " << tk.content << "\n";
+
+                break;
+            }
             case TOK_call_extern:{
                 oFile << "call " << tk.content << "\n";
                 break;
