@@ -2,6 +2,10 @@ format elf64 executable 3
 
 entry __main
 
+; [rsp + 8] is often used in this due to the return address being at the top of the stack
+; this means we cannot simply pop rxx as this would pop the return address instead of what we want
+; as such, we add 8 bytes to where we access the information, and then remove it from the stack after returning
+
 segment readable executable
 
 __exit:
@@ -24,42 +28,120 @@ mov QWORD rsi, r14   ; r14 has the pointer to our character
 mov rdx, 1           ; only one character to be printed
 syscall
 ret
+
+
+__sleepms:
+; rsi holds remaining time of sleep if it was interrupted
+; we dont care, so we set it to null to signal that fact to the kernel
+mov rsi, 0
+; we get the time in ms, but the kernel takes nanoseconds
+; thus we multiply by 1 000 000
+mov rax, [rsp + 8]
+xor rdx, rdx
+mov rbx, 1000000
+mul rbx
+mov [__sleepms_req + 8], rax
+mov rdi, __sleepms_req
+mov rax, 35 ; nanosleep syscall
+syscall
+ret
+
+segment readable writeable
+
+__sleepms_req dq 0, 0
 segment readable executable
 
 
 
 __main:
-push QWORD 65
-push QWORD 1
-push QWORD 1
-push QWORD 1
-; TOK_equals
-pop r15
-pop r14
-sub r14, r15
-jz __L0
-push QWORD 0
-jmp __L1
-__L0:
-push QWORD 1
-__L1:
-; TOK_equals
-pop r15
-pop r14
-sub r14, r15
-jz __L2
-push QWORD 0
-jmp __L3
-__L2:
-push QWORD 1
-__L3:
-; TOK_add
-pop r15
-pop r14
-add r14, r15
-push r14
+
+; auto-generated code below, reading it ay be difficult
+
+; TOK_num_combo
+push QWORD 10
+
+; TOK_num_combo
+push QWORD 97
+
+; TOK_call_extern
 call __printChar
 add rsp, 8
-push QWORD 0
-call __exit
+
+; TOK_call_extern
+call __printChar
 add rsp, 8
+
+; TOK_num_combo
+push QWORD 500
+
+; TOK_call_extern
+call __sleepms
+add rsp, 8
+
+; TOK_num_combo
+push QWORD 10
+
+; TOK_num_combo
+push QWORD 97
+
+; TOK_call_extern
+call __printChar
+add rsp, 8
+
+; TOK_call_extern
+call __printChar
+add rsp, 8
+
+; TOK_num_combo
+push QWORD 500
+
+; TOK_call_extern
+call __sleepms
+add rsp, 8
+
+; TOK_num_combo
+push QWORD 10
+
+; TOK_num_combo
+push QWORD 97
+
+; TOK_call_extern
+call __printChar
+add rsp, 8
+
+; TOK_call_extern
+call __printChar
+add rsp, 8
+
+; TOK_num_combo
+push QWORD 500
+
+; TOK_call_extern
+call __sleepms
+add rsp, 8
+
+; TOK_num_combo
+push QWORD 10
+
+; TOK_num_combo
+push QWORD 97
+
+; TOK_call_extern
+call __printChar
+add rsp, 8
+
+; TOK_call_extern
+call __printChar
+add rsp, 8
+
+; TOK_num_combo
+push QWORD 500
+
+; TOK_call_extern
+call __sleepms
+add rsp, 8
+mov rax, 60
+mov rdi, 1
+syscall
+
+;

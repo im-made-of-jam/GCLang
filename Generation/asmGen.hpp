@@ -11,7 +11,7 @@
 #include "Misc/mainArgs.hpp"
 #include "Misc/loadFile.hpp"
 
-bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bool includeStdlib, const std::string stdLibPath, const std::string windDownPath, MainArgs args){
+bool generateASM(const std::string filename, std::vector<Token>& writeToFile, MainArgs args){
     std::filesystem::remove(filename);
 
     std::ofstream oFile;
@@ -26,8 +26,8 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
 
     std::vector<std::string> stdLib;
 
-    if(includeStdlib){
-        if(!loadFile(stdLib, stdLibPath)){
+    if(args.includeASMStdLib){
+        if(!loadFile(stdLib, args.ASMStdLibPath)){
             std::cout << "could not load standard library, continuing anyways\n";
         }
     }
@@ -40,12 +40,20 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
     oFile << "segment readable executable\n";
     oFile << "\n\n\n";
     oFile << "__main:\n";
+    oFile << "\n; auto-generated code below, reading it ay be difficult\n";
+
+    if(!args.debug){
+        oFile << "; build using -D flag to add some potentially helpful comments\n";
+    }
 
     uint64_t labelNumber = 0; // labels probably need their own unique value, so we create this number to make them unique
 
     for(Token tk : writeToFile){
         switch(tk.type){
             case TOK_num_combo:{
+                if(args.debug){
+                    oFile << "\n; TOK_num_combo\n";
+                }
                 oFile << "push QWORD " << tk.content << "\n";
 
                 break;
@@ -53,7 +61,7 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
 
             case TOK_add:{
                 if(args.debug){
-                    oFile << "; TOK_add\n";
+                    oFile << "\n TOK_add\n";
                 }
                 oFile << "pop r15\n";
                 oFile << "pop r14\n";
@@ -63,7 +71,7 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
             }
             case TOK_sub:{
                 if(args.debug){
-                    oFile << "; TOK_sub\n";
+                    oFile << "\n; TOK_sub\n";
                 }
                 oFile << "pop r14\n";
                 oFile << "pop r15\n";
@@ -73,7 +81,7 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
             }
             case TOK_mul:{
                 if(args.debug){
-                    oFile << "; TOK_mul\n";
+                    oFile << "\n; TOK_mul\n";
                 }
                 oFile << "pop r15\n";
                 oFile << "pop rax\n";
@@ -84,7 +92,7 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
             }
             case TOK_div:{
                 if(args.debug){
-                    oFile << "; TOK_mul\n";
+                    oFile << "\n; TOK_mul\n";
                 }
                 oFile << "pop r15\n";
                 oFile << "pop rax\n";
@@ -95,7 +103,7 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
             }
             case TOK_mod:{
                 if(args.debug){
-                    oFile << "; TOK_mul\n";
+                    oFile << "\n; TOK_mul\n";
                 }
                 oFile << "pop r15\n";
                 oFile << "pop rax\n";
@@ -106,7 +114,7 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
             }
             case TOK_equals:{
                 if(args.debug){
-                    oFile << "; TOK_equals\n";
+                    oFile << "\n; TOK_equals\n";
                 }
                 oFile << "pop r15\n";
                 oFile << "pop r14\n";
@@ -123,9 +131,32 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
                 oFile << "__L" << secondLabel << ":\n";
                 break;
             }
+            case TOK_not:{
+                if(args.debug){
+                    oFile << "\n; TOK_not\n";
+                }
+                oFile << "pop r15\n";
+                oFile << "cmp r15, 0\n";
+
+                uint64_t firstLabel = labelNumber++;
+                uint64_t secondLabel = labelNumber++;
+
+                oFile << "jz __L" << firstLabel << "\n";
+                oFile << "push QWORD 0\n";
+                oFile << "jmp __L" << secondLabel << "\n";
+                oFile << "__L" << firstLabel << ":\n";
+                oFile << "push QWORD 1\n";
+                oFile << "__L" << secondLabel << ":\n";
+                break;
+            }
             case TOK_call_extern:{
+                if(args.debug){
+                    oFile << "\n; TOK_call_extern\n";
+                }
+                // in ASM mode externs always have exactly one argument
                 oFile << "call " << tk.content << "\n";
                 oFile << "add rsp, 8\n";
+                // this means we can always clean up the stack in the same way, by adding to the stack pointer
                 break;
             }
 
@@ -142,6 +173,21 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, bo
                 return false;
             }
         }
+    }
+
+    const std::string windDownPath = args.ASMWindDownPath;
+
+    std::vector<std::string> stdWindDown;
+
+    if(args.includeASMStdLib){
+        if(!loadFile(stdWindDown, args.ASMWindDownPath)){
+            std::cout << "could not load assembly stdlib wind down, continuing anyways\n";
+            std::cout << "    path given - " << args.ASMWindDownPath << "\n";
+        }
+    }
+
+    for(std::string s : stdWindDown){
+        oFile << s << "\n";
     }
 
     oFile.close();

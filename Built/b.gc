@@ -1,7 +1,18 @@
 # command line build text
 # ./Built/GCLang ./Built/b.gc -o ./bGCOut -I -D -DD -DDD -A
 
-65 1 1 1 = = + @__printChar
+10 97 @__printChar @__printChar
 
-0 @__exit
+500 @__sleepms
 
+10 97 @__printChar @__printChar
+
+500 @__sleepms
+
+10 97 @__printChar @__printChar
+
+500 @__sleepms
+
+10 97 @__printChar @__printChar
+
+500 @__sleepms

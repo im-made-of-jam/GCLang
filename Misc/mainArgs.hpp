@@ -25,19 +25,19 @@ struct MainArgs{
     std::string CPPCompiler = "g++";
 
     bool includeCPPStdlib = true; // include the stdLib file at the top of the c++ file
-    std::string CPPStdLibPath = "Built/Generation/stdLib.cpp"; // the path to the c++ standard library
-    std::string CPPStdLibAliasPath = "Built/Generation/CPPStdLib.alias"; // the path to the c++ alias file
-    std::string CPPWindDownPath = "Built/Generation/stdLibWindDown.cpp"; // the path to the c++ standard library wind down file
+    std::string CPPStdLibPath = "./Built/Generation/stdLib.cpp"; // the path to the c++ standard library
+    std::string CPPStdLibAliasPath = "./Built/Generation/CPPStdLib.alias"; // the path to the c++ alias file
+    std::string CPPWindDownPath = "./Built/Generation/stdLibWindDown.cpp"; // the path to the c++ standard library wind down file
 
     // same as above, but switch "c++" for "bytecode"
     bool includeBCStdLib = true;
-    std::string BCStdLibPath = "Built/Generation/stdLib.gcbc";
-    std::string BCStdLibAliasPath = "Built/Generation/BytecodeStdLib.alias";
-    std::string BCWindDownPath = "Build/Generation/stdLibWindDown.gcbc";
+    std::string BCStdLibPath = "./Built/Generation/stdLib.gcbc";
+    std::string BCStdLibAliasPath = "./Built/Generation/BytecodeStdLib.alias";
+    std::string BCWindDownPath = "./Build/Generation/stdLibWindDown.gcbc";
 
     // same as aboce but switch "bytecode" for "asm"
     bool includeASMStdLib = true;
-    std::string ASMStdLibPath = "Built/Generation/stdLib.s";
-    std::string ASMStdLibAliasPath = "Built/Generation/ASMStdLib.alias";
-    std::string ASMWindDownPath = "Build/Generation/stdLibWindDown.s";
+    std::string ASMStdLibPath = "./Built/Generation/stdLib.s";
+    std::string ASMStdLibAliasPath = "./Built/Generation/ASMStdLib.alias";
+    std::string ASMWindDownPath = "./Built/Generation/stdLibWindDown.s";
 };
