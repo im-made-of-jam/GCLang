@@ -72,9 +72,12 @@ void printHelp(){
     std::cout << "\n";
     std::cout << "  -A\n";
     std::cout << "    generate assembly instead of c++\n";
+    std::cout << "    this will prevent more than one stack from being used, and everything will be on the same stack\n";
     std::cout << "\n";
     std::cout << "  -B\n";
     std::cout << "    generate GC bytecode instead of c++\n";
+    std::cout << "\n";
+    std::cout << "    very rudimentary, and very incomplete implementation\n";
     std::cout << "\n";
     std::cout << "  -D\n";
     std::cout << "  -DD\n";

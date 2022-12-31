@@ -1,18 +1,10 @@
 # command line build text
 # ./Built/GCLang ./Built/b.gc -o ./bGCOut -I -D -DD -DDD -A
 
-10 97 @__printChar @__printChar
-
-500 @__sleepms
-
-10 97 @__printChar @__printChar
-
-500 @__sleepms
-
-10 97 @__printChar @__printChar
-
-500 @__sleepms
-
-10 97 @__printChar @__printChar
-
-500 @__sleepms
+0 if
+    1 @__exit
+else
+    0 if
+        2 @__exit
+    endif
+endif

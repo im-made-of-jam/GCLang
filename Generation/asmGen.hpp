@@ -46,7 +46,21 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
         oFile << "; build using -D flag to add some potentially helpful comments\n";
     }
 
-    uint64_t labelNumber = 0; // labels probably need their own unique value, so we create this number to make them unique
+    uint64_t labelNumber = 1; // labels probably need their own unique value, so we create this number to make them unique
+
+    // if blocks require their own labels, and as such we have a stack for generating them
+    // this struct is made so that if there is no else, the label can simply be discarded
+    struct IfLabelPair{
+        uint64_t elseLabel;
+        uint64_t endLabel;
+
+        IfLabelPair(uint64_t Else, uint64_t End){
+            elseLabel = Else;
+            endLabel = End;
+        }
+    };
+
+    std::vector<IfLabelPair> ifLabels;
 
     for(Token tk : writeToFile){
         switch(tk.type){
@@ -54,8 +68,10 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
                 if(args.debug){
                     oFile << "\n; TOK_num_combo\n";
                 }
-                oFile << "push QWORD " << tk.content << "\n";
-
+                // push imm64 does not exist
+                // push r/m64 does though, so we use this with "mov, r/m64, imm64"
+                oFile << "mov rax, " << tk.content << "\n";
+                oFile << "push rax\n";
                 break;
             }
 
@@ -112,6 +128,7 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
                 oFile << "push rdx\n";
                 break;
             }
+
             case TOK_equals:{
                 if(args.debug){
                     oFile << "\n; TOK_equals\n";
@@ -124,10 +141,10 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
                 uint64_t secondLabel = labelNumber++;
 
                 oFile << "jz __L" << firstLabel << "\n";
-                oFile << "push QWORD 0\n";
+                oFile << "push BYTE 0\n";
                 oFile << "jmp __L" << secondLabel << "\n";
                 oFile << "__L" << firstLabel << ":\n";
-                oFile << "push QWORD 1\n";
+                oFile << "push BYTE 1\n";
                 oFile << "__L" << secondLabel << ":\n";
                 break;
             }
@@ -142,13 +159,14 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
                 uint64_t secondLabel = labelNumber++;
 
                 oFile << "jz __L" << firstLabel << "\n";
-                oFile << "push QWORD 0\n";
+                oFile << "push BYTE 0\n";
                 oFile << "jmp __L" << secondLabel << "\n";
                 oFile << "__L" << firstLabel << ":\n";
-                oFile << "push QWORD 1\n";
+                oFile << "push BYTE 1\n";
                 oFile << "__L" << secondLabel << ":\n";
                 break;
             }
+
             case TOK_call_extern:{
                 if(args.debug){
                     oFile << "\n; TOK_call_extern\n";
@@ -160,6 +178,74 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
                 break;
             }
 
+            case TOK_stack_dup:{
+                if(args.debug){
+                    oFile << "\n; TOK_stack_dup\n";
+                }
+                oFile << "pop rax\n";
+                oFile << "push rax\n";
+                oFile << "push rax\n";
+                break;
+            }
+            case TOK_stack_drop:{
+                if(args.debug){
+                    oFile << "\n; TOK_stack_drop\n";
+                }
+                oFile << "add rsp, 8\n";
+                break;
+            }
+            case TOK_stack_swap:{
+                if(args.debug){
+                    oFile << "\n; TOK_stack_swap\n";
+                }
+                oFile << "pop r15\n";
+                oFile << "pop r14\n";
+                oFile << "push r15\n";
+                oFile << "push r14\n";
+                break;
+            }
+
+            case TOK_if_begin:{
+                if(args.debug){
+                    oFile << "\n; TOK_if_begin\n";
+                }
+                ifLabels.push_back(IfLabelPair(labelNumber++, labelNumber++));
+
+                oFile << "pop r15\n";
+                oFile << "cmp r15, 0\n";
+                oFile << "jz __L" << ifLabels.back().elseLabel << "\n";
+                break;
+            }
+            case TOK_if_else:{
+                if(args.debug){
+                    oFile << "\n; TOK_if_else\n";
+                }
+                oFile << "jmp __L" << ifLabels.back().endLabel << "\n";
+                oFile << "__L" << ifLabels.back().elseLabel << ":\n";
+
+                ifLabels.back().elseLabel = 0;
+
+                break;
+            }
+            case TOK_if_end:{
+                if(args.debug){
+                    oFile << "\n; TOK_if_end\n";
+                }
+                if(ifLabels.back().elseLabel){
+                    oFile << "__L" << ifLabels.back().elseLabel << ":\n";
+                }
+                oFile << "__L" << ifLabels.back().endLabel << ":\n";
+
+                ifLabels.pop_back();
+                break;
+            }
+
+            case TOK_switch_stack:
+            case TOK_data_move:{
+                std::cout << "multiple stacks not supported in assembly mode\n";
+
+                return false;
+            }
 
             case TOK_string_begin:
             case TOK_string_end:

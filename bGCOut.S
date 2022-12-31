@@ -58,90 +58,51 @@ __main:
 ; auto-generated code below, reading it ay be difficult
 
 ; TOK_num_combo
-push QWORD 10
+mov rax, 0
+push rax
+
+; TOK_if_begin
+pop r15
+cmp r15, 0
+jz __L2
 
 ; TOK_num_combo
-push QWORD 97
+mov rax, 1
+push rax
 
 ; TOK_call_extern
-call __printChar
+call __exit
 add rsp, 8
 
-; TOK_call_extern
-call __printChar
-add rsp, 8
+; TOK_if_else
+jmp __L1
+__L2:
 
 ; TOK_num_combo
-push QWORD 500
+mov rax, 0
+push rax
 
-; TOK_call_extern
-call __sleepms
-add rsp, 8
-
-; TOK_num_combo
-push QWORD 10
-
-; TOK_num_combo
-push QWORD 97
-
-; TOK_call_extern
-call __printChar
-add rsp, 8
-
-; TOK_call_extern
-call __printChar
-add rsp, 8
+; TOK_if_begin
+pop r15
+cmp r15, 0
+jz __L4
 
 ; TOK_num_combo
-push QWORD 500
+mov rax, 2
+push rax
 
 ; TOK_call_extern
-call __sleepms
+call __exit
 add rsp, 8
 
-; TOK_num_combo
-push QWORD 10
+; TOK_if_end
+__L4:
+__L3:
 
-; TOK_num_combo
-push QWORD 97
-
-; TOK_call_extern
-call __printChar
-add rsp, 8
-
-; TOK_call_extern
-call __printChar
-add rsp, 8
-
-; TOK_num_combo
-push QWORD 500
-
-; TOK_call_extern
-call __sleepms
-add rsp, 8
-
-; TOK_num_combo
-push QWORD 10
-
-; TOK_num_combo
-push QWORD 97
-
-; TOK_call_extern
-call __printChar
-add rsp, 8
-
-; TOK_call_extern
-call __printChar
-add rsp, 8
-
-; TOK_num_combo
-push QWORD 500
-
-; TOK_call_extern
-call __sleepms
-add rsp, 8
+; TOK_if_end
+__L1:
 mov rax, 60
-mov rdi, 1
+mov rdi, 0
 syscall
 
 ;
