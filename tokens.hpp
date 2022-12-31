@@ -15,7 +15,7 @@ enum Tokens{
     TOK_separator     ,  // ' '
 
     TOK_add           ,  // '+'   "1 5 +"  -> 6
-    TOK_sub           ,  // '-'   "6 2 -"  -> 4 
+    TOK_sub           ,  // '-'   "6 2 -"  -> 4
     TOK_mul           ,  // '*'   "6 3 *"  -> 18
     TOK_div           ,  // '/'   "18 6 /" -> 3
     TOK_mod           ,  // '%'   "18 5 %" -> 3

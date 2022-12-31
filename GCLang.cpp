@@ -372,7 +372,7 @@ int main(int argc, char* argv[]){
     if(args.generateASM){
         std::string outputName = std::string(args.outputFilename) + ".S";
 
-        if(!generateASM(outputName, readyForGen, args.includeASMStdLib, args.ASMStdLibPath, args.ASMWindDownPath)){
+        if(!generateASM(outputName, readyForGen, args.includeASMStdLib, args.ASMStdLibPath, args.ASMWindDownPath, args)){
             std::cout << "code gen failure\n";
 
             return -1;

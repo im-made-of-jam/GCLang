@@ -9,18 +9,14 @@ syscall
 
 
 __printChar:
-; preserve r14
-push r14
 ; move stack pointer into r14 so that we can add 8 without messing up the rest of the stack
 mov r14, rsp
-; skip return address and r14, both 8 bytes, 16 combined
-add r14, 16
+; skip return address, 8 bytes
+add r14, 8
 ; syscall setup
 mov rax, 1           ; write syscall number
 mov rdi, 1           ; stdout file descriptor
 mov QWORD rsi, r14   ; r14 has the pointer to our character
 mov rdx, 1           ; only one character to be printed
 syscall
-; preserve r14
-pop r14
 ret
