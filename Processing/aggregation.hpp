@@ -10,7 +10,7 @@ bool stringAggregation(const std::vector<Token>& inputList, std::vector<Token>& 
     bool inString = false;
 
     Token working(TOK_string_crun);
-    
+
     for(Token tk : inputList){
         if(tk.type == TOK_string_char){
             inString = true;
@@ -69,6 +69,12 @@ bool keyWordsToTokens(const std::vector<Token>& inputList, std::vector<Token>& t
             }
             else if(tk.content == "swap"){
                 tkList.push_back(Token(TOK_stack_swap, "$"));
+            }
+            else if(tk.content == "and"){
+                tkList.push_back(Token(TOK_bool_and, "and"));
+            }
+            else if(tk.content == "or"){
+                tkList.push_back(Token(TOK_bool_or, "or"));
             }
             else{
                 tkList.push_back(tk);

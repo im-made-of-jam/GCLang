@@ -40,12 +40,13 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
     oFile << "segment readable executable\n";
     oFile << "\n\n\n";
     oFile << "__main:\n";
-    oFile << "\n; auto-generated code below, reading it ay be difficult\n";
+    oFile << "\n; auto-generated code below, reading it may be difficult\n";
 
     if(!args.debug){
         oFile << "; build using -D flag to add some potentially helpful comments\n";
     }
 
+    // we start at 1 because this allows us to use 0 as a sort of "null" to convey useless-ness
     uint64_t labelNumber = 1; // labels probably need their own unique value, so we create this number to make them unique
 
     // if blocks require their own labels, and as such we have a stack for generating them
@@ -69,7 +70,8 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
                     oFile << "\n; TOK_num_combo\n";
                 }
                 // push imm64 does not exist
-                // push r/m64 does though, so we use this with "mov, r/m64, imm64"
+                //   this prevents "push tk.content"
+                // push r/m64 does exist, so we use this with "mov, r/m64, imm64"
                 oFile << "mov rax, " << tk.content << "\n";
                 oFile << "push rax\n";
                 break;
@@ -77,7 +79,7 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
 
             case TOK_add:{
                 if(args.debug){
-                    oFile << "\n TOK_add\n";
+                    oFile << "\n; TOK_add\n";
                 }
                 oFile << "pop r15\n";
                 oFile << "pop r14\n";
@@ -101,17 +103,24 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
                 }
                 oFile << "pop r15\n";
                 oFile << "pop rax\n";
+                // mul takes what is effectively a 128 bit operand with rdx shoved on the high end of rax
+                //   to prevent this from mesing up the answer we set it to 0
                 oFile << "xor rdx, rdx\n";
                 oFile << "mul r15\n";
                 oFile << "push rax\n";
                 break;
             }
+            // div and mod are both contained within the same instruction on x86
+            // the answer to the division is put into rax
+            // the answer to the modulus is put into rdx
+            // this means that these only differ by the register that they push
             case TOK_div:{
                 if(args.debug){
                     oFile << "\n; TOK_mul\n";
                 }
                 oFile << "pop r15\n";
                 oFile << "pop rax\n";
+                // similar situation to mul, rdx:rax problem solution
                 oFile << "xor rdx, rdx\n";
                 oFile << "div r15\n";
                 oFile << "push rax\n";
@@ -140,15 +149,15 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
                 uint64_t firstLabel = labelNumber++;
                 uint64_t secondLabel = labelNumber++;
 
-                oFile << "jz __L" << firstLabel << "\n";
+                oFile << "jz __L" <<  firstLabel << "\n";
                 oFile << "push BYTE 0\n";
                 oFile << "jmp __L" << secondLabel << "\n";
-                oFile << "__L" << firstLabel << ":\n";
+                oFile << "__L" <<     firstLabel << ":\n";
                 oFile << "push BYTE 1\n";
-                oFile << "__L" << secondLabel << ":\n";
+                oFile << "__L" <<     secondLabel << ":\n";
                 break;
             }
-            case TOK_not:{
+            case TOK_bool_not:{
                 if(args.debug){
                     oFile << "\n; TOK_not\n";
                 }
@@ -158,12 +167,12 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
                 uint64_t firstLabel = labelNumber++;
                 uint64_t secondLabel = labelNumber++;
 
-                oFile << "jz __L" << firstLabel << "\n";
+                oFile << "jz __L" <<  firstLabel << "\n";
                 oFile << "push BYTE 0\n";
                 oFile << "jmp __L" << secondLabel << "\n";
-                oFile << "__L" << firstLabel << ":\n";
+                oFile << "__L" <<     firstLabel << ":\n";
                 oFile << "push BYTE 1\n";
-                oFile << "__L" << secondLabel << ":\n";
+                oFile << "__L" <<     secondLabel << ":\n";
                 break;
             }
 
@@ -237,6 +246,27 @@ bool generateASM(const std::string filename, std::vector<Token>& writeToFile, Ma
                 oFile << "__L" << ifLabels.back().endLabel << ":\n";
 
                 ifLabels.pop_back();
+                break;
+            }
+
+            case TOK_bool_and:{
+                if(args.debug){
+                    oFile << "\n; TOK_bool_and\n";
+                }
+                oFile << "pop r15\n";
+                oFile << "pop r14\n";
+                oFile << "and r15, r14\n";
+                oFile << "push r15\n";
+                break;
+            }
+            case TOK_bool_or:{
+                if(args.debug){
+                    oFile << "\n; TOK_bool_or\n";
+                }
+                oFile << "pop r15\n";
+                oFile << "pop r14\n";
+                oFile << "or r15, r14\n";
+                oFile << "push r15\n";
                 break;
             }
 

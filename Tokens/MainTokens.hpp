@@ -120,7 +120,7 @@ bool tokenise(std::vector<Token>& tkList, const std::string& source){
             }
 
             case '!':{
-                tkList.push_back(Token(TOK_not, std::string{c}));
+                tkList.push_back(Token(TOK_bool_not, std::string{c}));
                 break;
             }
 
@@ -237,7 +237,7 @@ std::string getTokenName(uint64_t token){
         case TOK_equals:
             return std::string{"equals"};
 
-        case TOK_not:
+        case TOK_bool_not:
             return std::string{"not"};
 
         case TOK_if_begin:

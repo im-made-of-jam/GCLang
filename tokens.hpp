@@ -20,7 +20,6 @@ enum Tokens{
     TOK_div           ,  // '/'   "18 6 /" -> 3
     TOK_mod           ,  // '%'   "18 5 %" -> 3
     TOK_equals        ,  // '='   "5 5 ="  -> 1   "5 4 =" -> 0
-    TOK_not           ,  // '!'    0       -> 1    4      -> 0
 
     TOK_if_begin      ,  // '['
     TOK_if_else       ,  // '|'
@@ -48,6 +47,10 @@ enum Tokens{
     TOK_stack_swap    ,  // '$'
     TOK_switch_stack  ,  // '&'
     TOK_data_move     ,  // '~'
+
+    TOK_bool_and      ,  // "and"
+    TOK_bool_or       ,  // "or"
+    TOK_bool_not      ,  // '!'    0       -> 1    4      -> 0
 
     TOK_call_extern   ,  // '@'
 

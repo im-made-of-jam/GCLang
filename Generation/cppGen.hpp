@@ -130,7 +130,7 @@ bool generateCpp(const std::string filename, std::vector<Token>& writeToFile, bo
                 oFile << "\n";
                 break;
             }
-            case TOK_not:{
+            case TOK_bool_not:{
                 oFile << "// __TOK_not\n";
                 oFile << "  if(stacks[activeStack].back() == 0){\n";
                 oFile << "   stacks[activeStack].pop_back();\n";

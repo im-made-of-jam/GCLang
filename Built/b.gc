@@ -1,10 +1,10 @@
 # command line build text
 # ./Built/GCLang ./Built/b.gc -o ./bGCOut -I -D -DD -DDD -A
 
-0 if
-    1 @__exit
-else
-    0 if
-        2 @__exit
-    endif
-endif
+@__setStackSize
+
+@__printI
+
+10 @__printChar
+
+1 @__exit

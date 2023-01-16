@@ -235,7 +235,7 @@ bool generateBytecode(const std::string filename, std::vector<Token>& writeToFil
                 break;
             }
 
-            case TOK_not:{
+            case TOK_bool_not:{
                 clearContent();
                 output(_raw::makeInstr(_raw::invert, 3)[0]);
                 break;

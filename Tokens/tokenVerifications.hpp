@@ -83,7 +83,7 @@ bool verifyLoopBrackets(const std::string& str){
 // ensure that a number fits inside of 64 bits, and all of the chars in its digits are valid
 bool verifyNumber(const std::string& n){
     try{
-        std::stoll(n);
+        std::stoull(n);
     }
     catch(std::out_of_range const e){
         std::cout << "number too long\n";
