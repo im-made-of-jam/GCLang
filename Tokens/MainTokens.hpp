@@ -130,6 +130,11 @@ bool tokenise(std::vector<Token>& tkList, const std::string& source){
                 break;
             }
 
+            case '\'':{
+                tkList.push_back(Token(TOK_string_begin, std::string{c}));
+                break;
+            }
+
             case '{':{
                 tkList.push_back(Token(TOK_func_begin, std::string{c}));
                 break;
