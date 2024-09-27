@@ -35,7 +35,7 @@ bool tokenise(std::vector<Token>& tkList, const std::string& source){
     for(char c : source){
         // if the current char is inside of a string then we handle it differently
         if(inString){
-            if(c == '"'){ // end o the string
+            if(c == '"' || c == '\''){ // end of the string
                 inString = false; // tell the rest of the function we are no longer in a string
 
                 // not used for anything as of yet but it is here for when it is used
@@ -43,7 +43,7 @@ bool tokenise(std::vector<Token>& tkList, const std::string& source){
                                        std::string{std::to_string(strLength)}
                                       ));
 
-                // strings are pointers so we add a lenth and a make_pointer token
+                // strings are pointers so we add a length and a make_pointer token
                 tkList.push_back(Token(TOK_num_combo, std::to_string(strLength)));
                 tkList.push_back(Token(TOK_make_pointer, std::string{'<'}));
 
@@ -132,6 +132,7 @@ bool tokenise(std::vector<Token>& tkList, const std::string& source){
 
             case '\'':{
                 tkList.push_back(Token(TOK_string_begin, std::string{c}));
+                inString = true;
                 break;
             }
 
